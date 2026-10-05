@@ -15,8 +15,13 @@ import {
 
 /* ---------------------------------- Size chart ---------------------------------- */
 
-export type SizeOption = { id: number; label: string };
-export type BrandOption = { name: string; slug: string; sizes: SizeOption[] };
+/** `id` is a SizeChart row id, or a standard size id (see `standardSizeId`) for brands without a chart. */
+export type SizeOption = { id: string; label: string };
+/**
+ * `estimate` brands have no chart for this gender and category yet: their `sizes` is empty and the
+ * converter offers `standardSizeOptions` instead, so results use standard sizing.
+ */
+export type BrandOption = { name: string; slug: string; estimate: boolean; sizes: SizeOption[] };
 export type OptionsIndex = Record<Gender, Record<Category, BrandOption[]>>;
 
 function sortRows(rows: SizeChartRow[], category: Category): SizeChartRow[] {
@@ -34,13 +39,16 @@ function sortRows(rows: SizeChartRow[], category: Category): SizeChartRow[] {
   );
 }
 
-/** Every brand and size that exists, grouped by gender and category, for the converter dropdowns. */
+/**
+ * Every brand for the converter dropdowns, grouped by gender and category. Brands with chart data list
+ * their own sizes; every other known brand is marked as an estimate.
+ */
 export function getOptionsIndex(): OptionsIndex {
   const db = getDb();
+  ensureBrands();
   const rows = db.prepare("SELECT * FROM SizeChart").all() as SizeChartRow[];
-  const slugs = new Map(
-    (db.prepare("SELECT name, slug FROM Brands").all() as Brand[]).map((b) => [b.name.toLowerCase(), b.slug]),
-  );
+  const brands = db.prepare("SELECT name, slug FROM Brands").all() as Brand[];
+  const slugs = new Map(brands.map((b) => [b.name.toLowerCase(), b.slug]));
   const index = {} as OptionsIndex;
   for (const g of GENDERS) {
     index[g] = {} as Record<Category, BrandOption[]>;
@@ -52,19 +60,23 @@ export function getOptionsIndex(): OptionsIndex {
         list.push(r);
         byBrand.set(r.brand, list);
       }
-      index[g][c] = [...byBrand.entries()]
-        .map(([name, list]) => {
-          const multiRegion = new Set(list.map((r) => r.region ?? "")).size > 1;
-          return {
-            name,
-            slug: slugs.get(name.toLowerCase()) ?? slugify(name),
-            sizes: sortRows(list, c).map((r) => ({
-              id: r.id,
-              label: multiRegion && r.region ? `${r.region} ${r.size_label}` : r.size_label,
-            })),
-          };
-        })
-        .sort((a, b) => a.name.localeCompare(b.name));
+      const charted: BrandOption[] = [...byBrand.entries()].map(([name, list]) => {
+        const multiRegion = new Set(list.map((r) => r.region ?? "")).size > 1;
+        return {
+          name,
+          slug: slugs.get(name.toLowerCase()) ?? slugify(name),
+          estimate: false,
+          sizes: sortRows(list, c).map((r) => ({
+            id: String(r.id),
+            label: multiRegion && r.region ? `${r.region} ${r.size_label}` : r.size_label,
+          })),
+        };
+      });
+      const chartedNames = new Set(charted.map((b) => b.name.toLowerCase()));
+      const estimated: BrandOption[] = brands
+        .filter((b) => !chartedNames.has(b.name.toLowerCase()))
+        .map((b) => ({ name: b.name, slug: b.slug, estimate: true, sizes: [] }));
+      index[g][c] = [...charted, ...estimated].sort((a, b) => a.name.localeCompare(b.name));
     }
   }
   return index;

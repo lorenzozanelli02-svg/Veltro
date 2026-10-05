@@ -4,6 +4,7 @@ import { ArrowDown, ChevronDown, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { OptionsIndex } from "@/lib/data";
+import { standardSizeOptions } from "@/lib/standard-sizes";
 import type { Category, Gender } from "@/lib/types";
 import { Combobox } from "./Combobox";
 import { ResultCard, type ConvertResponse } from "./ResultCard";
@@ -34,14 +35,29 @@ export function Converter({ index, preset = {} }: { index: OptionsIndex; preset?
   const categories = useMemo(
     () =>
       (Object.keys(CATEGORY_LABELS) as Category[]).filter(
-        (c) => c !== "dresses" || gender === "women" || index[gender].dresses.length > 0,
+        (c) => c !== "dresses" || gender === "women" || index[gender].dresses.some((b) => !b.estimate),
       ),
     [gender, index],
   );
   const activeCategory = categories.includes(category) ? category : "tops";
   const brands = index[gender][activeCategory];
   const brandNames = useMemo(() => brands.map((b) => b.name), [brands]);
-  const sizes = brands.find((b) => b.name === fromBrand)?.sizes ?? [];
+  const estimateTags = useMemo(
+    () => Object.fromEntries(brands.filter((b) => b.estimate).map((b) => [b.name, "Estimate"])),
+    [brands],
+  );
+  const fromOption = brands.find((b) => b.name === fromBrand);
+  // A brand without a chart offers standard sizes, grouped by region ("UK 10" -> UK).
+  const sizeGroups = useMemo(() => {
+    if (!fromOption?.estimate) return null;
+    const groups = new Map<string, { id: string; label: string }[]>();
+    for (const s of standardSizeOptions(gender, activeCategory)) {
+      const region = s.label.split(" ")[0];
+      groups.set(region, [...(groups.get(region) ?? []), s]);
+    }
+    return [...groups.entries()];
+  }, [fromOption, gender, activeCategory]);
+  const sizes = sizeGroups ? sizeGroups.flatMap(([, list]) => list) : (fromOption?.sizes ?? []);
 
   // Keep selections valid when gender or category changes.
   useEffect(() => {
@@ -72,7 +88,7 @@ export function Converter({ index, preset = {} }: { index: OptionsIndex; preset?
       const res = await fetch("/api/convert", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gender, category: activeCategory, sourceId: Number(sizeId), toBrand }),
+        body: JSON.stringify({ gender, category: activeCategory, sourceId: sizeId, fromBrand, toBrand }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -148,6 +164,7 @@ export function Converter({ index, preset = {} }: { index: OptionsIndex; preset?
                   label="Brand you wear"
                   value={fromBrand}
                   options={brandNames}
+                  tags={estimateTags}
                   invalid={missing.includes("fromBrand") && !fromBrand}
                   onChange={(v) => {
                     setFromBrand(v);
@@ -175,11 +192,21 @@ export function Converter({ index, preset = {} }: { index: OptionsIndex; preset?
                     }`}
                   >
                     <option value="">Size</option>
-                    {sizes.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.label}
-                      </option>
-                    ))}
+                    {sizeGroups
+                      ? sizeGroups.map(([region, list]) => (
+                          <optgroup key={region} label={`${region} sizes`}>
+                            {list.map((s) => (
+                              <option key={s.id} value={s.id}>
+                                {s.label}
+                              </option>
+                            ))}
+                          </optgroup>
+                        ))
+                      : sizes.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.label}
+                          </option>
+                        ))}
                   </select>
                   <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-2.5 top-1/2 size-[18px] -translate-y-1/2 text-faint" />
                 </div>
@@ -196,6 +223,7 @@ export function Converter({ index, preset = {} }: { index: OptionsIndex; preset?
                 label="Brand you're buying from"
                 value={toBrand}
                 options={brandNames}
+                tags={estimateTags}
                 invalid={missing.includes("toBrand") && !toBrand}
                 onChange={(v) => {
                   setToBrand(v);

@@ -144,6 +144,8 @@ export type ConvertInput = {
   gender: Gender;
   category: Category;
   source: SizeChartRow;
+  /** Set when `source` is standard sizing standing in for a brand that has no chart yet. */
+  sourceBrandWithoutChart?: string;
   targetBrand: string;
   /** All SizeChart rows for the target brand, gender and category (may be empty). */
   targetRows: SizeChartRow[];
@@ -158,7 +160,12 @@ export function convertSize(input: ConvertInput): ConversionResult | ConversionE
   // 1. Body measurements from the source size, or standard sizing if the brand has none.
   let sourceRow = source;
   let estimated = false;
-  if (!order.some((m) => rangeOf(source, m))) {
+  if (input.sourceBrandWithoutChart) {
+    estimated = true;
+    notes.push(
+      `We don't have ${input.sourceBrandWithoutChart}'s size chart for ${genderWord} ${category} yet, so we used standard ${displaySize(toRef(source))} measurements for your size.`,
+    );
+  } else if (!order.some((m) => rangeOf(source, m))) {
     const std = standardRowForLabel(gender, category, source.size_label, source.region);
     if (!std) {
       return {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { convertSize, matchSize, pickRegionRows } from "@/lib/convert";
+import { standardRowForId, standardSizeOptions } from "@/lib/standard-sizes";
 import type { SizeChartRow } from "@/lib/types";
 
 let nextId = 1;
@@ -122,5 +123,33 @@ describe("convertSize", () => {
     const m = matchSize(120, target, "chest");
     expect(m?.row.size_label).toBe("14");
     expect(m?.outside).toBe("above");
+  });
+});
+
+describe("brands without a chart", () => {
+  it("round-trips standard size ids", () => {
+    const opts = standardSizeOptions("women", "tops");
+    expect(opts.some((o) => o.label === "UK 10")).toBe(true);
+    const id = opts.find((o) => o.label === "EU 38")!.id;
+    expect(standardRowForId("women", "tops", id)).toMatchObject({ region: "EU", size_label: "38" });
+    expect(standardRowForId("women", "tops", "12")).toBeNull();
+    expect(standardRowForId("women", "tops", "std:UK:nope")).toBeNull();
+  });
+
+  it("converts from a brand without a chart using standard sizing and labels an estimate", () => {
+    const std = standardRowForId("women", "tops", "std:UK:10")!;
+    const r = convertSize({
+      gender: "women",
+      category: "tops",
+      source: { ...std, brand: "No Chart Co" },
+      sourceBrandWithoutChart: "No Chart Co",
+      targetBrand: "B",
+      targetRows: target,
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.confidence).toBe("estimate");
+    expect(r.recommended.label).toBe("10");
+    expect(r.notes.join(" ")).toContain("No Chart Co");
   });
 });

@@ -13,6 +13,7 @@ export function Combobox({
   placeholder = "Search brands",
   emptyText = "No matching brands",
   invalid = false,
+  tags = {},
 }: {
   id: string;
   label: string;
@@ -22,6 +23,8 @@ export function Combobox({
   placeholder?: string;
   emptyText?: React.ReactNode;
   invalid?: boolean;
+  /** Small label shown next to an option, keyed by option. */
+  tags?: Record<string, string>;
 }) {
   const listId = useId();
   const [query, setQuery] = useState(value);
@@ -151,7 +154,12 @@ export function Combobox({
                 } ${o === value ? "font-semibold text-ink" : "text-ink"}`}
               >
                 <span className="truncate">{o}</span>
-                {o === value && <Check aria-hidden="true" className="size-4 shrink-0 text-accent" />}
+                <span className="flex shrink-0 items-center gap-2">
+                  {tags[o] && (
+                    <span className="rounded-full bg-soft px-2 py-0.5 text-[11px] font-medium text-muted">{tags[o]}</span>
+                  )}
+                  {o === value && <Check aria-hidden="true" className="size-4 text-accent" />}
+                </span>
               </li>
             ))
           )}

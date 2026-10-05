@@ -53,6 +53,28 @@ function tableFor(gender: Gender, category: Category): StandardSize[] {
   return category === "bottoms" ? MEN_BOTTOMS : MEN_TOPS;
 }
 
+/** Option id for a standard size, e.g. "std:UK:10". Used for brands that have no chart yet. */
+export function standardSizeId(region: StandardRegion, label: string): string {
+  return `std:${region}:${label}`;
+}
+
+/** Standard UK, EU and US sizes as converter options, for a brand that has no chart yet. */
+export function standardSizeOptions(gender: Gender, category: Category): { id: string; label: string }[] {
+  return STANDARD_REGIONS.flatMap((region) =>
+    standardRows(gender, category, region).map((r) => ({
+      id: standardSizeId(region, r.size_label),
+      label: `${region} ${r.size_label}`,
+    })),
+  );
+}
+
+/** The standard size row for an id made by `standardSizeId`, or null if it isn't one. */
+export function standardRowForId(gender: Gender, category: Category, id: string): SizeChartRow | null {
+  const m = /^std:(UK|EU|US):(.+)$/.exec(id);
+  if (!m) return null;
+  return standardRows(gender, category, m[1] as StandardRegion).find((r) => r.size_label === m[2]) ?? null;
+}
+
 export function asStandardRegion(region: string | null | undefined): StandardRegion | null {
   const r = (region ?? "").trim().toUpperCase();
   if (r === "UK" || r === "GB") return "UK";

@@ -69,7 +69,7 @@ export default async function BrandPage({ params }: Props) {
           </h2>
           <Converter
             index={getOptionsIndex()}
-            preset={{ gender: first?.gender, category: first?.category, toBrand: first ? brand.name : undefined }}
+            preset={{ gender: first?.gender, category: first?.category, toBrand: brand.name }}
           />
         </section>
 
