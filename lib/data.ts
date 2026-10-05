@@ -344,6 +344,18 @@ export function fitFeedbackSummary(): FitFeedbackSummary[] {
     .all() as FitFeedbackSummary[];
 }
 
+/** Public figures for the About page: brands with charts, chart rows, and how often a recommended size fitted. */
+export function siteStats() {
+  const db = getDb();
+  const one = (sql: string) => (db.prepare(sql).get() as { n: number }).n;
+  return {
+    brands: one("SELECT COUNT(DISTINCT brand COLLATE NOCASE) AS n FROM SizeChart"),
+    sizes: one("SELECT COUNT(*) AS n FROM SizeChart"),
+    fitReports: one("SELECT COUNT(*) AS n FROM FitFeedback"),
+    perfectFits: one("SELECT COUNT(*) AS n FROM FitFeedback WHERE fit_result = 'perfect'"),
+  };
+}
+
 export function adminCounts() {
   const db = getDb();
   const one = (sql: string) => (db.prepare(sql).get() as { n: number }).n;
