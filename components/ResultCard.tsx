@@ -29,15 +29,16 @@ export function ResultCard({ result, gender, category }: { result: ConvertRespon
   return (
     <section
       aria-labelledby="result-heading"
-      className="animate-rise overflow-hidden rounded-[var(--radius-card)] border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(0,0,0,0.18)]"
+      className="animate-rise overflow-hidden rounded-[var(--radius-card)] border border-line bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_48px_-24px_rgba(0,0,0,0.22)]"
     >
-      <div className="px-5 pb-5 pt-6 text-center sm:px-8">
+      <div className="relative px-5 pb-5 pt-7 text-center sm:px-8">
+        <div className="ruler absolute inset-x-0 top-0 h-2.5 text-accent/40" aria-hidden="true" />
         <h2 id="result-heading" className="text-[15px] text-muted">
           Your size in <span className="font-semibold text-ink">{result.to.brand}</span>
         </h2>
-        <p className="mt-2 flex items-baseline justify-center gap-2">
+        <p className="mt-4 flex items-baseline justify-center gap-2">
           {showRegion && <span className="text-xl font-semibold text-faint">{result.recommended.region}</span>}
-          <span className="text-[72px] font-bold leading-none tracking-[-0.04em] text-ink tabular-nums">
+          <span className="font-display text-[104px] leading-[0.82] tracking-[-0.02em] text-ink tabular-nums">
             {result.recommended.label}
           </span>
         </p>

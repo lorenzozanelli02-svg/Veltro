@@ -23,7 +23,7 @@ export function SizeChartTable({ rows, caption }: { rows: SizeChartRow[]; captio
   return (
     <div>
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h3 className="text-lg font-semibold tracking-tight">{caption}</h3>
+        <h3 className="font-display text-[30px] leading-tight">{caption}</h3>
         <div className="w-28 shrink-0">
           <Segmented
             name={`unit-${caption}`}

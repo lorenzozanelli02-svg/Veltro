@@ -48,23 +48,25 @@ export default async function BrandPage({ params }: Props) {
   const checked = rows.map((r) => r.last_checked).filter(Boolean).sort().at(-1);
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
-      <nav aria-label="Breadcrumb" className="pt-2 text-sm text-muted">
+    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+      <nav aria-label="Breadcrumb" className="pt-6 text-sm text-muted sm:pt-12">
         <Link href="/brands" className="hover:text-ink">
           Brands
         </Link>{" "}
         / <span className="text-ink">{brand.name}</span>
       </nav>
       <header className="mt-3 max-w-2xl">
-        <h1 className="text-3xl font-bold tracking-[-0.03em] sm:text-4xl">{brand.name} size guide</h1>
-        <p className="mt-2 text-base leading-relaxed text-muted">
+        <h1 className="font-display text-5xl leading-[1] tracking-[-0.01em] sm:text-7xl">
+          {brand.name} <em className="text-accent">size guide</em>
+        </h1>
+        <p className="mt-4 text-[17px] leading-relaxed text-muted">
           The full {brand.name} size chart, plus a converter that finds your {brand.name} size from a brand you already wear.
         </p>
       </header>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start">
-        <section aria-labelledby="convert" className="rounded-[var(--radius-card)] border border-line p-4 sm:p-6 lg:sticky lg:top-6">
-          <h2 id="convert" className="mb-4 text-lg font-semibold tracking-tight">
+        <section aria-labelledby="convert" className="rounded-[28px] border border-line p-4 shadow-[0_1px_2px_rgba(17,17,16,0.04),0_30px_60px_-30px_rgba(17,17,16,0.22)] sm:p-6 lg:sticky lg:top-20">
+          <h2 id="convert" className="mb-4 font-display text-[28px] leading-tight">
             Find your {brand.name} size
           </h2>
           <Converter

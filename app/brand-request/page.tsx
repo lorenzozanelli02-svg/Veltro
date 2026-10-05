@@ -9,9 +9,11 @@ export const metadata: Metadata = {
 
 export default function BrandRequestPage() {
   return (
-    <div className="mx-auto w-full max-w-md px-4 pt-4">
-      <h1 className="text-3xl font-bold tracking-[-0.03em]">Can&rsquo;t find your brand?</h1>
-      <p className="mt-2 text-muted">Tell us and we&rsquo;ll add it. The most requested brands go first.</p>
+    <div className="mx-auto w-full max-w-md px-4 pt-8 sm:pt-16">
+      <h1 className="font-display text-5xl leading-[1] tracking-[-0.01em] sm:text-6xl">
+        Can&rsquo;t find <em className="text-accent">your brand?</em>
+      </h1>
+      <p className="mt-4 text-[17px] leading-relaxed text-muted">Tell us and we&rsquo;ll add it. The most requested brands go first.</p>
       <BrandRequestForm />
     </div>
   );

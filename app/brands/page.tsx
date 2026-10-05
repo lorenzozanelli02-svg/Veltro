@@ -18,9 +18,10 @@ export default function BrandsPage() {
     byLetter.set(letter, [...(byLetter.get(letter) ?? []), b]);
   }
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 pt-4 sm:px-6">
-      <h1 className="text-3xl font-bold tracking-[-0.03em] sm:text-4xl">Brand size guides</h1>
-      <p className="mt-2 max-w-xl text-muted">Pick a brand to see its full size chart and convert your size.</p>
+    <div className="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6 sm:pt-16">
+      <p className="text-[13px] font-medium uppercase tracking-[0.14em] text-accent">Size guides</p>
+      <h1 className="mt-3 font-display text-5xl leading-[1] tracking-[-0.01em] sm:text-7xl">Every brand we cover.</h1>
+      <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-muted">Pick a brand to see its full size chart and convert your size.</p>
       {brands.length === 0 ? (
         <p className="mt-8 rounded-2xl bg-soft p-6 text-muted">
           No brands yet.{" "}
@@ -30,19 +31,19 @@ export default function BrandsPage() {
           .
         </p>
       ) : (
-        <div className="mt-8 space-y-8">
+        <div className="mt-12 space-y-12">
           {[...byLetter.entries()].map(([letter, list]) => (
             <section key={letter} aria-label={letter}>
-              <h2 className="text-sm font-semibold text-faint">{letter}</h2>
-              <ul className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              <h2 className="border-b border-line pb-2 font-display text-4xl leading-none text-accent">{letter}</h2>
+              <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {list.map((b) => (
                   <li key={b.id}>
                     <Link
                       href={`/brands/${b.slug}`}
-                      className="flex min-h-12 items-center justify-between rounded-[var(--radius-control)] border border-line px-4 font-medium transition-colors hover:border-ink"
+                      className="group flex min-h-14 items-center justify-between rounded-[var(--radius-control)] border border-line px-5 font-medium transition-colors duration-200 hover:border-ink"
                     >
                       {b.name}
-                      <span aria-hidden="true" className="text-faint">→</span>
+                      <span aria-hidden="true" className="text-faint transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-accent">→</span>
                     </Link>
                   </li>
                 ))}
