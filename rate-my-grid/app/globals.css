@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/*
+  Colour tokens, shared with the Get Seen Get Signed site: near-black background
+  and one neon green accent. `warn` and `bad` only colour low scores.
+*/
+@theme {
+  --color-bg: #050807;
+  --color-surface: #0a100d;
+  --color-raised: #101814;
+  --color-line: #1a2621;
+  --color-ink: #f1f5f2;
+  --color-muted: #9aa8a0;
+  --color-accent: #3be584;
+  --color-accent-hover: #6cf0a5;
+  --color-on-accent: #03130a;
+  --color-warn: #f5b544;
+  --color-bad: #ff6b5e;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  background: var(--color-bg);
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+button,
+a,
+input,
+label {
+  touch-action: manipulation;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: rise 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* The flow replaces the landing page while it's open (see components/flow/ScoreFlow.tsx). */
+@custom-variant flow-open (html[data-flow] &);
+
+/* Score rings fill up from zero to their stroke-dasharray; --c (the circumference) is set inline. */
+@keyframes ring-fill {
+  from {
+    stroke-dasharray: 0 var(--c);
+  }
+}
+
+.ring-fill {
+  animation: ring-fill 1100ms cubic-bezier(0.2, 0.8, 0.2, 1) 150ms both;
+}
+
+@keyframes bar-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.bar-fill {
+  transform-origin: left;
+  animation: bar-fill 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 250ms both;
+}
