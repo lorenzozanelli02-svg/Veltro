@@ -9,8 +9,8 @@ export function CategoryBars({ categories, notes = false }: { categories: Report
         return (
           <li key={key}>
             <div className="flex items-baseline justify-between gap-4">
-              <span className="text-sm font-medium sm:text-[15px]">{label}</span>
-              <span className={`font-mono text-sm leading-none font-medium tabular-nums ${BAND_TEXT[scoreBand(score)]}`}>{score}</span>
+              <span className="text-sm font-semibold sm:text-[15px]">{label}</span>
+              <span className={`font-display text-xl leading-none font-bold tabular-nums ${BAND_TEXT[scoreBand(score)]}`}>{score}</span>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line" aria-hidden="true">
               {/* The gradient spans the whole track, so low scores stay orange and only high ones reach purple. */}

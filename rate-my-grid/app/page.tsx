@@ -5,13 +5,10 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { WhatYouGet } from "@/components/landing/WhatYouGet";
-import { SerenityBackdrop } from "@/components/ui/digital-serenity-animated-landing-page";
 
 export default function Home() {
   return (
     <>
-      {/* One fixed backdrop behind the landing page and the scoring steps, so the grid stays put between them. */}
-      <SerenityBackdrop fixed />
       {/* Hidden while the scoring flow is open; the flow renders in its place. */}
       <div className="relative flex flex-1 flex-col flow-open:hidden">
         <Header />

@@ -60,7 +60,6 @@ export function mockReport(goal: GoalId, answers: Answers, metrics?: ProfileMetr
   const report: Report = {
     score: 58,
     verdict: VERDICTS[goal],
-    summary: `Your posts are clear and your results are real, which is the hard part. But a new visitor can't tell who you help or what to do next, so the interest your content earns mostly scrolls away. Fix the bio and give people one next step, and the same posts will start bringing in ${clip(customer, 40)}.`,
     categories: {
       bio: {
         score: 44,
@@ -98,20 +97,6 @@ export function mockReport(goal: GoalId, answers: Answers, metrics?: ProfileMetr
         title: "Pin your three best posts",
         problem: "The top of your grid shows whatever you posted last, which is a quote graphic with very few likes.",
         fix: `Pin a result, a post explaining ${clip(offer, 40)}, and one that shows your face. New visitors decide from those three.`,
-      },
-    ],
-    strengths: [
-      {
-        title: "Talking-to-camera Reels",
-        detail: "Your Reels where you speak to camera get about three times the likes of your photos. They build trust faster than anything else on the grid.",
-      },
-      {
-        title: "Real client results",
-        detail: "The before-and-after posts are specific and believable. Proof like this is what turns a follower into an enquiry.",
-      },
-      {
-        title: "A grid that looks like one brand",
-        detail: "Consistent colours and lighting mean people recognise your posts in their feed before they read a word.",
       },
     ],
     full: {

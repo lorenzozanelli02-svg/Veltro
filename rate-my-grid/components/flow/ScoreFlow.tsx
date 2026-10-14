@@ -174,6 +174,7 @@ export function ScoreFlow() {
 
   return (
     <div className="relative isolate flex min-h-dvh flex-col">
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(80%_70%_at_50%_0%,rgb(221_42_123/0.1),transparent_70%)]" />
       <div className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         {/* Phone: back, logo, close. Computer: logo on the left, the steps in the middle, close on the right. */}
         <header className="flex h-16 items-center justify-between lg:h-20">
@@ -190,21 +191,19 @@ export function ScoreFlow() {
             </button>
           )}
           <Link href="/" aria-label="Rate My Grid, home">
-            <Logo />
+            <Logo className="text-lg sm:text-xl lg:text-2xl" />
           </Link>
           {!analyzing && (
-            <ol className="hidden items-center gap-4 font-mono text-xs tracking-[0.18em] uppercase lg:flex" aria-label={`Step ${index + 1} of ${STEPS.length}`}>
+            <ol className="hidden items-center gap-3 lg:flex" aria-label={`Step ${index + 1} of ${STEPS.length}`}>
               {STEPS.map((s, i) => (
-                <li key={s} className="flex items-center gap-2.5" aria-current={i === index ? "step" : undefined}>
-                  {i < index ? (
-                    <Check aria-hidden="true" className="size-3.5 text-good" strokeWidth={2.5} />
-                  ) : (
-                    <span className={`tabular-nums ${i === index ? "text-ig" : "text-muted/70"}`}>0{i + 1}</span>
-                  )}
-                  <span className={i === index ? "text-ink" : "text-muted"}>{STEP_LABELS[s]}</span>
-                  {i < STEPS.length - 1 && (
-                    <span aria-hidden="true" className={`ml-1.5 h-px w-10 ${i < index ? "bg-linear-to-r from-ig-orange to-ig-pink" : "bg-slate-400/20"}`} />
-                  )}
+                <li key={s} className="flex items-center gap-3" aria-current={i === index ? "step" : undefined}>
+                  <span
+                    className={`flex size-7 items-center justify-center rounded-full text-xs font-bold tabular-nums ${i <= index ? "bg-ig text-white" : "bg-raised text-muted ring-1 ring-line"}`}
+                  >
+                    {i < index ? <Check aria-hidden="true" className="size-3.5" strokeWidth={3} /> : i + 1}
+                  </span>
+                  <span className={`text-sm ${i === index ? "font-semibold text-ink" : "text-muted"}`}>{STEP_LABELS[s]}</span>
+                  {i < STEPS.length - 1 && <span aria-hidden="true" className={`h-px w-10 ${i < index ? "bg-accent" : "bg-line"}`} />}
                 </li>
               ))}
             </ol>
@@ -221,28 +220,24 @@ export function ScoreFlow() {
         {!analyzing && (
           <div className="flex gap-1.5 lg:hidden" aria-label={`Step ${index + 1} of ${STEPS.length}`} role="img">
             {STEPS.map((s, i) => (
-              <div key={s} className={`h-0.5 flex-1 rounded-full transition-colors ${i <= index ? "bg-ig" : "bg-slate-400/20"}`} />
+              <div key={s} className={`h-1 flex-1 rounded-full transition-colors ${i <= index ? "bg-ig" : "bg-line"}`} />
             ))}
           </div>
         )}
 
-        <main key={analyzing ? "analyzing" : step} className="flex-1 pt-8 pb-6 lg:pt-10 lg:pb-20">
+        <main key={analyzing ? "analyzing" : step} className="animate-rise flex-1 pt-8 pb-6 lg:pt-10 lg:pb-20">
           {!analyzing && (
             <button
               type="button"
               onClick={back}
-              className="mb-8 hidden items-center gap-2 font-mono text-xs tracking-[0.18em] text-muted uppercase transition-colors hover:text-ink lg:inline-flex"
+              className="mb-8 hidden items-center gap-2 text-sm font-semibold text-muted transition-colors hover:text-ink lg:inline-flex"
             >
               <ArrowLeft aria-hidden="true" className="size-4" />
               Back
             </button>
           )}
           {analyzing ? (
-            <Analyzing
-              username={mode === "username" ? (profile?.username ?? null) : null}
-              // The profile picture from the lookup, or the visitor's first screenshot (a local preview; never uploaded for this).
-              image={mode === "username" ? (profile?.avatar ?? null) : (shots[0]?.url ?? null)}
-            />
+            <Analyzing profile={mode === "username" ? profile : null} />
           ) : step === "goal" ? (
             <GoalStep
               value={goal}

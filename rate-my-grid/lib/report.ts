@@ -24,9 +24,6 @@ const Fix = z.object({
 
 const Point = z.object({ point: Text(120), why: Text(320) });
 
-/** Something the account already does well, for the "What's working" tab. */
-const Strength = z.object({ title: Text(90), detail: Text(320) });
-
 export const POST_FORMATS = ["Reel", "Carousel", "Single image", "Story"] as const;
 export const PLAN_FORMATS = ["Reel", "Carousel", "Single image", "Stories", "Engage", "Rest"] as const;
 
@@ -67,8 +64,6 @@ export const FullReportSchema = z.object({
 export const ReportSchema = z.object({
   score: Score,
   verdict: Text(110),
-  /** Two or three sentences under the verdict: the overall picture in plain words. */
-  summary: Text(420),
   categories: z.object({
     bio: Category,
     content: Category,
@@ -77,7 +72,6 @@ export const ReportSchema = z.object({
     goalFit: Category,
   }),
   freeFixes: z.array(Fix).min(2).max(3),
-  strengths: z.array(Strength).min(2).max(3),
   full: FullReportSchema,
 });
 
@@ -102,9 +96,6 @@ export const ReportSourceSchema = z.discriminatedUnion("kind", [
     postsAnalysed: z.number().int(),
     engagementRate: z.number().nullable(),
     postsLast30Days: z.number().int(),
-    // For the profile preview on the report page: the bio and small thumbnails (data URLs) of the latest posts.
-    bio: z.string().optional(),
-    thumbnails: z.array(z.string()).max(9).optional(),
   }),
 ]);
 

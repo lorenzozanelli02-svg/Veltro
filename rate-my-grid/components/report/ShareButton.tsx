@@ -53,11 +53,11 @@ export function ShareButton({ data }: { data: CardData }) {
       <dialog
         ref={dialog}
         aria-label="Share your score"
-        className="m-auto w-[min(26rem,calc(100vw-2rem))] rounded-3xl border border-slate-400/20 bg-slate-950 p-5 text-ink backdrop:bg-black/80 backdrop:backdrop-blur-sm"
+        className="m-auto w-[min(26rem,calc(100vw-2rem))] rounded-3xl border border-line bg-surface p-5 text-ink backdrop:bg-black/80 backdrop:backdrop-blur-sm"
         onClick={(e) => e.target === dialog.current && dialog.current?.close()}
       >
         <div className="flex items-center justify-between">
-          <p className="text-2xl font-light text-slate-50">Share your score</p>
+          <p className="font-display text-2xl font-extrabold uppercase">Share your score</p>
           <button
             type="button"
             onClick={() => dialog.current?.close()}

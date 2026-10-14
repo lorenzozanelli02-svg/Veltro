@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import { ACTIONS, AnswersSchema, FREQUENCIES, goalById, LIMITS, type Answers, type GoalId } from "@/lib/goals";
 import { Arrow, buttonClass } from "../Button";
-import { STEP_ACTIONS, StepLayout } from "./StepHeading";
+import { StepLayout } from "./StepHeading";
 
 export type DraftAnswers = { customer: string; offer: string; frequency?: Answers["frequency"]; action?: Answers["action"] };
 
@@ -39,19 +39,17 @@ export function DetailsStep({
 
   return (
     <StepLayout
-      title="Four quick"
-      accent="questions"
+      title={<>Four quick <span className="text-ig">questions</span></>}
       intro="Short answers are fine. They make your score specific to you."
       aside={
-        <p className="glass mt-6 hidden rounded-full px-4 py-2 font-mono text-xs tracking-[0.16em] text-soft uppercase lg:inline-flex">
+        <p className="mt-6 hidden rounded-full bg-raised px-3.5 py-1.5 text-sm font-semibold text-muted ring-1 ring-line lg:inline-flex">
           Goal: {hints.label}
         </p>
       }
     >
       <form onSubmit={submit} noValidate>
-        <div className="space-y-9">
+        <div className="space-y-8">
           <TextQuestion
-            number={1}
             label="Who's your ideal customer?"
             placeholder={hints.customerHint}
             value={value.customer}
@@ -60,7 +58,6 @@ export function DetailsStep({
             onChange={(customer) => onChange({ ...value, customer })}
           />
           <TextQuestion
-            number={2}
             label="What do you sell?"
             placeholder={hints.offerHint}
             value={value.offer}
@@ -69,7 +66,6 @@ export function DetailsStep({
             onChange={(offer) => onChange({ ...value, offer })}
           />
           <ChoiceQuestion
-            number={3}
             label="How often do you post?"
             options={FREQUENCIES}
             value={value.frequency}
@@ -77,7 +73,6 @@ export function DetailsStep({
             onChange={(frequency) => onChange({ ...value, frequency })}
           />
           <ChoiceQuestion
-            number={4}
             label="What should people do after finding you?"
             options={ACTIONS}
             value={value.action}
@@ -86,7 +81,7 @@ export function DetailsStep({
           />
         </div>
 
-        <div className={`${STEP_ACTIONS} mt-10 lg:flex lg:justify-end`}>
+        <div className="sticky bottom-0 -mx-4 mt-10 bg-linear-to-t from-bg from-60% to-transparent px-4 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:bg-none sm:px-0 lg:flex lg:justify-end">
           <button type="submit" className={buttonClass({ className: "w-full lg:w-auto lg:min-w-64" })}>
             Continue
             <Arrow />
@@ -97,17 +92,7 @@ export function DetailsStep({
   );
 }
 
-/** "01 / 04" above each question; hidden from screen readers, which already announce the field. */
-function QuestionNumber({ n }: { n: number }) {
-  return (
-    <span aria-hidden="true" className="mb-2.5 block font-mono text-xs font-normal tracking-[0.2em] text-soft/80">
-      0{n} / 04
-    </span>
-  );
-}
-
 function TextQuestion({
-  number,
   label,
   placeholder,
   value,
@@ -115,7 +100,6 @@ function TextQuestion({
   error,
   onChange,
 }: {
-  number: number;
   label: string;
   placeholder: string;
   value: string;
@@ -126,8 +110,7 @@ function TextQuestion({
   const id = useId();
   return (
     <div>
-      <QuestionNumber n={number} />
-      <label htmlFor={id} className="block text-lg font-medium text-slate-50">
+      <label htmlFor={id} className="block text-[17px] font-semibold">
         {label}
       </label>
       <input
@@ -141,7 +124,7 @@ function TextQuestion({
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
         onChange={(e) => onChange(e.target.value)}
-        className="glass mt-3 h-14 w-full rounded-2xl px-4 text-base text-ink placeholder:text-muted/70 focus:border-accent focus:outline-none aria-invalid:border-bad"
+        className="mt-3 h-14 w-full rounded-2xl border border-line bg-surface px-4 text-base text-ink placeholder:text-muted/60 focus:border-accent focus:outline-none aria-invalid:border-bad"
       />
       {error && (
         <p id={`${id}-error`} className="mt-2 text-sm text-bad">
@@ -153,14 +136,12 @@ function TextQuestion({
 }
 
 function ChoiceQuestion<T extends string>({
-  number,
   label,
   options,
   value,
   error,
   onChange,
 }: {
-  number: number;
   label: string;
   options: readonly { id: T; label: string }[];
   value: T | undefined;
@@ -170,15 +151,12 @@ function ChoiceQuestion<T extends string>({
   const name = useId();
   return (
     <fieldset aria-describedby={error ? `${name}-error` : undefined} data-invalid={error ? true : undefined}>
-      <legend className="text-lg font-medium text-slate-50">
-        <QuestionNumber n={number} />
-        {label}
-      </legend>
+      <legend className="text-[17px] font-semibold">{label}</legend>
       <div className="mt-3 grid grid-cols-2 gap-2.5">
         {options.map((option) => (
           <label
             key={option.id}
-            className="glass flex min-h-14 cursor-pointer items-center rounded-2xl px-4 py-3 text-[15px] leading-snug text-soft transition-colors hover:border-slate-300/35 has-checked:border-accent/80 has-checked:bg-accent/10 has-checked:text-ink has-focus-visible:outline-2 has-focus-visible:outline-accent"
+            className="flex min-h-14 cursor-pointer items-center rounded-2xl border border-line bg-surface px-4 py-3 text-[15px] leading-snug font-medium transition-colors hover:border-accent/50 has-checked:border-accent has-checked:bg-accent/8 has-checked:text-ink has-focus-visible:outline-2 has-focus-visible:outline-accent"
           >
             <input
               type="radio"

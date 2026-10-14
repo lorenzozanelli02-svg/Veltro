@@ -8,7 +8,7 @@ export default function NotFound() {
       <Header nav={false} />
       <main className="flex flex-1 items-center px-4 pt-28 pb-20 sm:px-6">
         <div className="mx-auto max-w-md text-center">
-          <h1 className="text-5xl leading-[1.05] font-extralight tracking-tight text-slate-50">
+          <h1 className="font-display text-5xl leading-[0.92] font-extrabold uppercase">
             Nothing <span className="text-ig">here</span>
           </h1>
           <p className="mt-4 text-base leading-relaxed text-muted">

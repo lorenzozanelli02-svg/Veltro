@@ -7,7 +7,7 @@ const NAV = [
   { href: "/#what-you-get", label: "What you get" },
 ];
 
-/** Sits on top of the page's first section. */
+/** Sits on top of the page's first section, like the Get Seen Get Signed header. */
 export function Header({ nav = true, action }: { nav?: boolean; action?: React.ReactNode }) {
   return (
     <header className="absolute inset-x-0 top-0 z-20">
@@ -18,7 +18,7 @@ export function Header({ nav = true, action }: { nav?: boolean; action?: React.R
         {nav && (
           <nav aria-label="Main" className="hidden items-center gap-8 lg:flex">
             {NAV.map((item) => (
-              <a key={item.href} href={item.href} className="font-mono text-xs tracking-[0.18em] text-soft/90 uppercase transition-colors hover:text-ink">
+              <a key={item.href} href={item.href} className="text-sm font-medium text-ink/80 transition-colors hover:text-accent">
                 {item.label}
               </a>
             ))}

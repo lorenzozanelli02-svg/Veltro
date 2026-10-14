@@ -1,9 +1,9 @@
 import { useId } from "react";
 import { scoreBand, type ScoreBand } from "@/lib/report";
 
-/** Colour for a score's number: green when strong, amber when middling, red when weak. */
+/** Colour for a score's number: pink when strong, Instagram's yellow when middling, red when weak. */
 export const BAND_TEXT: Record<ScoreBand, string> = {
-  strong: "text-good",
+  strong: "text-accent",
   okay: "text-warn",
   weak: "text-bad",
 };
@@ -41,11 +41,11 @@ export function ScoreRing({ score, className = "", label = true }: { score: numb
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[36cqw] leading-[0.85] font-light tracking-tight tabular-nums">
+        <span className="font-display text-[38cqw] leading-[0.85] font-extrabold tabular-nums">
           <span className="sr-only">Score: </span>
           {score}
         </span>
-        {label && <span className="mt-[3cqw] font-mono text-[7.5cqw] tracking-[0.18em] text-muted uppercase">out of 100</span>}
+        {label && <span className="mt-[2cqw] text-[8cqw] font-semibold tracking-[0.18em] text-muted uppercase">out of 100</span>}
       </div>
     </div>
   );

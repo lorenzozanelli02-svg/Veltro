@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Inter, JetBrains_Mono } from "next/font/google";
+import { Barlow_Condensed, Inter } from "next/font/google";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -10,8 +10,6 @@ const barlow = Barlow_Condensed({
   variable: "--font-barlow",
   display: "swap",
 });
-// The small uppercase labels in the Digital Serenity style.
-const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["300", "400", "500"], variable: "--font-jetbrains", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -23,13 +21,13 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#03060d",
+  themeColor: "#08070a",
   colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-GB" data-scroll-behavior="smooth" className={`${inter.variable} ${barlow.variable} ${mono.variable}`}>
+    <html lang="en-GB" data-scroll-behavior="smooth" className={`${inter.variable} ${barlow.variable}`}>
       <body className="flex min-h-dvh flex-col font-sans antialiased">{children}</body>
     </html>
   );

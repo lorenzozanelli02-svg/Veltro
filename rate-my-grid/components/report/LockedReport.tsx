@@ -1,6 +1,5 @@
 import { Lock } from "lucide-react";
 import { SITE } from "@/lib/site";
-import { ButtonLink } from "../Button";
 import { Check } from "../landing/Check";
 import { UnlockButton } from "./UnlockButton";
 
@@ -11,49 +10,66 @@ const INCLUDED = [
   "A 30-day posting plan",
 ];
 
-const SECTIONS = [
-  { title: "Keep", tone: "text-good", bars: ["85%", "70%", "78%"] },
-  { title: "Stop", tone: "text-bad", bars: ["80%", "62%"] },
-  { title: "Start", tone: "text-warn", bars: ["74%", "88%", "58%"] },
-  { title: "Your new bio", tone: "text-slate-50", bars: ["60%", "90%", "45%"] },
-  { title: "10 post ideas", tone: "text-slate-50", bars: ["80%", "65%", "75%", "55%"] },
-  { title: "30-day plan", tone: "text-slate-50", bars: ["70%", "85%", "60%"] },
-];
-
 /**
  * Placeholder shapes, blurred, behind the unlock card. The real paid sections are never sent to the
  * browser before payment, so there's nothing here to un-blur.
  */
 function Placeholder() {
+  const bar = (w: string) => <div className="h-3 rounded-full bg-muted/30" style={{ width: w }} />;
   return (
-    <div aria-hidden="true" className="pointer-events-none grid gap-4 select-none blur-[5px]">
-      {SECTIONS.map(({ title, tone, bars }) => (
-        <div key={title} className="glass rounded-2xl p-6">
-          <p className={`text-2xl font-light ${tone}`}>{title}</p>
+    <div aria-hidden="true" className="pointer-events-none grid gap-10 select-none blur-[5px] lg:grid-cols-3 lg:gap-5">
+      {["Keep", "Stop", "Start"].map((title) => (
+        <div key={title} className="rounded-2xl border border-line bg-surface p-6">
+          <p className="font-display text-2xl font-extrabold text-accent uppercase">{title}</p>
           <div className="mt-4 space-y-3">
-            {bars.map((w, i) => (
-              <div key={i} className="h-3 rounded-full bg-slate-400/25" style={{ width: w }} />
-            ))}
+            {bar("85%")}
+            {bar("70%")}
+            {bar("78%")}
           </div>
         </div>
       ))}
+      <div className="rounded-2xl border border-line bg-surface p-6">
+        <p className="font-display text-2xl font-extrabold uppercase">Your new bio</p>
+        <div className="mt-4 space-y-3">
+          {bar("60%")}
+          {bar("90%")}
+          {bar("45%")}
+        </div>
+      </div>
+      <div className="rounded-2xl border border-line bg-surface p-6">
+        <p className="font-display text-2xl font-extrabold uppercase">10 post ideas</p>
+        <div className="mt-4 space-y-3">
+          {bar("80%")}
+          {bar("65%")}
+          {bar("75%")}
+          {bar("55%")}
+        </div>
+      </div>
+      <div className="hidden rounded-2xl border border-line bg-surface p-6 lg:block">
+        <p className="font-display text-2xl font-extrabold uppercase">30-day plan</p>
+        <div className="mt-4 space-y-3">
+          {bar("70%")}
+          {bar("85%")}
+          {bar("60%")}
+        </div>
+      </div>
     </div>
   );
 }
 
-export function LockedReport({ id, unlockHref }: { id: string; unlockHref?: string }) {
+export function LockedReport({ id }: { id: string }) {
   return (
     <div className="grid *:col-start-1 *:row-start-1">
       <Placeholder />
-      <div className="relative z-10 flex items-start justify-center pt-10 sm:pt-16">
-        <div className="w-full max-w-md rounded-3xl border border-accent/30 bg-slate-950/90 p-6 shadow-2xl shadow-black/70 backdrop-blur-md sm:p-8">
+      <div className="relative z-10 flex items-start justify-center px-1 pt-14 lg:items-center lg:pt-0">
+        <div className="w-full max-w-md rounded-3xl border border-accent/30 bg-surface/95 p-6 shadow-2xl shadow-black/70 backdrop-blur-md sm:p-8">
           <span className="flex size-12 items-center justify-center rounded-full bg-accent/12 text-accent ring-1 ring-accent/30">
             <Lock aria-hidden="true" className="size-5" />
           </span>
-          <h2 className="mt-5 text-3xl leading-tight font-light tracking-tight text-slate-50 sm:text-4xl">
+          <h2 className="mt-5 font-display text-4xl leading-[0.95] font-extrabold uppercase">
             Your full report is <span className="text-ig">ready</span>
           </h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-soft">It&rsquo;s already written for your account. Unlock it once and keep it.</p>
+          <p className="mt-3 text-[15px] leading-relaxed text-muted">Already written from your screenshots. Unlock it once and keep it.</p>
           <ul className="mt-6 space-y-3.5">
             {INCLUDED.map((item) => (
               <li key={item} className="flex gap-3 text-[15px] leading-relaxed text-ink/90">
@@ -63,13 +79,7 @@ export function LockedReport({ id, unlockHref }: { id: string; unlockHref?: stri
             ))}
           </ul>
           <div className="mt-7">
-            {unlockHref ? (
-              <ButtonLink href={unlockHref} className="w-full">
-                Unlock full report · {SITE.price.label}
-              </ButtonLink>
-            ) : (
-              <UnlockButton id={id} price={SITE.price.label} />
-            )}
+            <UnlockButton id={id} price={SITE.price.label} />
           </div>
           <p className="mt-3 text-center text-xs text-muted">One-time payment. No subscription. Secure checkout by Stripe.</p>
         </div>

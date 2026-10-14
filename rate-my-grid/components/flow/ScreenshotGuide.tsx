@@ -1,5 +1,5 @@
 /**
- * Tiny drawings of the three screenshots we want. The pink outlines mark what has to be visible.
+ * Tiny drawings of the three screenshots we want. The green outlines mark what has to be visible.
  * Drawn rather than real screenshots so they never show a real person's account.
  */
 
@@ -99,8 +99,8 @@ export function ScreenshotGuide() {
       {SHOTS.map(({ title, text, Image }, i) => (
         <li key={title}>
           <Image />
-          <p className="mt-2.5 text-[13px] leading-tight font-medium text-slate-50 sm:text-sm">
-            <span className="font-mono text-accent tabular-nums">{i + 1}.</span> {title}
+          <p className="mt-2.5 text-[13px] leading-tight font-semibold sm:text-sm">
+            <span className="text-accent tabular-nums">{i + 1}.</span> {title}
           </p>
           <p className="mt-1 text-xs leading-snug text-muted">{text}</p>
         </li>
