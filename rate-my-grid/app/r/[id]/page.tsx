@@ -53,7 +53,7 @@ export default async function ReportPage({
         <div className="mx-auto max-w-3xl px-4 pt-24 pb-24 sm:px-6 sm:pt-28 lg:max-w-7xl lg:px-8 lg:pt-32">
           {report.demo && (
             <p className="mb-8 rounded-2xl border border-warn/40 bg-warn/8 px-4 py-3 text-sm leading-relaxed text-warn">
-              Demo report: these results are made up while the AI isn&rsquo;t connected. They don&rsquo;t reflect your screenshots.
+              Demo report: the AI isn&rsquo;t connected yet, so the scores and advice are placeholders, not a real verdict on this account.
             </p>
           )}
           {report.paid && unlocked && (
@@ -69,6 +69,25 @@ export default async function ReportPage({
                 <Eyebrow>Your Instagram score</Eyebrow>
                 <span className="rounded-full bg-raised px-3 py-1 text-xs font-semibold text-muted ring-1 ring-line">Goal: {goalLabel}</span>
               </div>
+              {report.source?.kind === "profile" ? (
+                <p className="mt-5 inline-flex max-w-full items-center gap-2.5 rounded-full bg-raised py-1.5 pr-4 pl-1.5 text-left ring-1 ring-line">
+                  {report.source.avatar ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- small data URL saved with the report
+                    <img src={report.source.avatar} alt="" className="size-8 shrink-0 rounded-full object-cover" />
+                  ) : (
+                    <span className="size-8 shrink-0 rounded-full bg-line" />
+                  )}
+                  <span className="min-w-0 truncate text-sm">
+                    <span className="font-semibold">@{report.source.username}</span>
+                    <span className="text-muted">
+                      {report.source.followers !== null && ` · ${report.source.followers.toLocaleString("en-GB")} followers`}
+                      <span className="hidden sm:inline">{` · ${report.source.postsAnalysed} posts analysed`}</span>
+                    </span>
+                  </span>
+                </p>
+              ) : report.source?.kind === "screenshots" ? (
+                <p className="mt-4 text-sm text-muted">Scored from your {report.source.count} screenshots</p>
+              ) : null}
               <div className="mt-8 flex flex-col items-center gap-8 sm:flex-row sm:gap-10 lg:flex-col lg:items-start">
                 <ScoreRing score={report.score} className="w-56 shrink-0 sm:w-60 lg:w-72" />
                 <div>

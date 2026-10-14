@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, ImagePlus, Loader2, Lock, X } from "lucide-react";
+import { AlertCircle, ImagePlus, Info, Loader2, Lock, Search, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { prepareScreenshot, ScreenshotError } from "@/lib/prepare-image";
 import { UPLOAD } from "@/lib/upload-rules";
@@ -22,12 +22,17 @@ export function UploadStep({
   shots,
   onShotsChange,
   error,
+  notice,
   onSubmit,
+  onUseUsername,
 }: {
   shots: Shot[];
   onShotsChange: (update: (shots: Shot[]) => Shot[]) => void;
   error: SubmitError | null;
+  /** Why we switched here from the username lookup, in friendly words. */
+  notice: string | null;
   onSubmit: () => void;
+  onUseUsername: () => void;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const thumbs = useRef<HTMLDivElement>(null);
@@ -93,6 +98,12 @@ export function UploadStep({
       intro="Take these on your phone, then add them here."
       aside={
         <>
+          {notice && !error && (
+            <div role="status" className="mt-6 flex gap-3 rounded-2xl border border-warn/40 bg-warn/8 p-4">
+              <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-warn" />
+              <p className="text-[15px] leading-relaxed text-ink/90">{notice}</p>
+            </div>
+          )}
           {error && (
             <div role="alert" className="mt-6 flex gap-3 rounded-2xl border border-bad/40 bg-bad/8 p-4">
               <AlertCircle aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-bad" />
@@ -207,6 +218,15 @@ export function UploadStep({
           Used only for your score. Never stored.
         </p>
       </div>
+
+      <button
+        type="button"
+        onClick={onUseUsername}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-line px-4 py-4 text-[15px] font-semibold text-muted transition-colors hover:border-accent/50 hover:text-ink lg:mt-10"
+      >
+        <Search aria-hidden="true" className="size-5" />
+        Look up a username instead
+      </button>
     </StepLayout>
   );
 }

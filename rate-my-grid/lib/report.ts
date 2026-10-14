@@ -83,6 +83,24 @@ export type AnalysisOutcome =
   | { status: "ok"; report: Report }
   | { status: "not_instagram" | "unreadable"; message: string };
 
+/** What was scored: uploaded screenshots, or a public profile looked up by username. */
+export const ReportSourceSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("screenshots"), count: z.number().int() }),
+  z.object({
+    kind: z.literal("profile"),
+    username: z.string(),
+    fullName: z.string(),
+    avatar: z.string().nullable(),
+    followers: z.number().nullable(),
+    postsCount: z.number().nullable(),
+    postsAnalysed: z.number().int(),
+    engagementRate: z.number().nullable(),
+    postsLast30Days: z.number().int(),
+  }),
+]);
+
+export type ReportSource = z.infer<typeof ReportSourceSchema>;
+
 export const StoredReportSchema = z.object({
   id: z.string(),
   createdAt: z.string(),
@@ -93,6 +111,7 @@ export const StoredReportSchema = z.object({
   paidAt: z.string().optional(),
   checkoutSessionId: z.string().optional(),
   demo: z.boolean().optional(),
+  source: ReportSourceSchema.optional(),
 });
 
 export type StoredReport = z.infer<typeof StoredReportSchema>;
@@ -104,6 +123,7 @@ export type PublicReport = Omit<Report, "full"> & {
   goal: StoredReport["goal"];
   paid: boolean;
   demo: boolean;
+  source: ReportSource | null;
   full: FullReport | null;
 };
 
@@ -116,6 +136,7 @@ export function toPublicReport(stored: StoredReport): PublicReport {
     goal: stored.goal,
     paid: stored.paid,
     demo: stored.demo ?? false,
+    source: stored.source ?? null,
     full: stored.paid ? full : null,
   };
 }

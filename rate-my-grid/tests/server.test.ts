@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { aiMode, paymentsMode } from "@/lib/config";
 import { isReportId, newReportId } from "@/lib/ids";
 import { sniffImageType } from "@/lib/images";
-import { checkRateLimit, LIMITS } from "@/lib/ratelimit";
+import { ANALYSIS_LIMITS, checkRateLimit } from "@/lib/ratelimit";
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -57,16 +57,16 @@ describe("checkRateLimit", () => {
 
   it("blocks a visitor after the burst limit", async () => {
     const count = counter();
-    for (let i = 0; i < LIMITS.burst.max; i++) expect((await checkRateLimit("1.2.3.4", count)).ok).toBe(true);
-    expect(await checkRateLimit("1.2.3.4", count)).toMatchObject({ ok: false, scope: "visitor" });
-    expect((await checkRateLimit("5.6.7.8", count)).ok).toBe(true);
+    for (let i = 0; i < ANALYSIS_LIMITS.burst.max; i++) expect((await checkRateLimit("1.2.3.4", ANALYSIS_LIMITS, count)).ok).toBe(true);
+    expect(await checkRateLimit("1.2.3.4", ANALYSIS_LIMITS, count)).toMatchObject({ ok: false, scope: "visitor" });
+    expect((await checkRateLimit("5.6.7.8", ANALYSIS_LIMITS, count)).ok).toBe(true);
   });
 
   it("stops everyone once the daily cap is reached", async () => {
     vi.stubEnv("DAILY_ANALYSIS_CAP", "2");
     const count = counter();
-    expect((await checkRateLimit("a", count)).ok).toBe(true);
-    expect((await checkRateLimit("b", count)).ok).toBe(true);
-    expect(await checkRateLimit("c", count)).toMatchObject({ ok: false, scope: "global" });
+    expect((await checkRateLimit("a", ANALYSIS_LIMITS, count)).ok).toBe(true);
+    expect((await checkRateLimit("b", ANALYSIS_LIMITS, count)).ok).toBe(true);
+    expect(await checkRateLimit("c", ANALYSIS_LIMITS, count)).toMatchObject({ ok: false, scope: "global" });
   });
 });

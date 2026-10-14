@@ -5,15 +5,18 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnswersSchema, GOAL_IDS, type GoalId } from "@/lib/goals";
+import { parseInstagramHandle } from "@/lib/instagram-handle";
+import type { ProfilePreview } from "@/lib/lookup/types";
 import { Logo } from "../Logo";
+import { AccountStep } from "./AccountStep";
 import { Analyzing } from "./Analyzing";
 import { DetailsStep, EMPTY_ANSWERS, type DraftAnswers } from "./DetailsStep";
 import { GoalStep } from "./GoalStep";
 import { UploadStep, type Shot, type SubmitError } from "./UploadStep";
 
-const STEPS = ["goal", "details", "upload"] as const;
+const STEPS = ["goal", "details", "account"] as const;
 type Step = (typeof STEPS)[number];
-const STEP_LABELS: Record<Step, string> = { goal: "Your goal", details: "Questions", upload: "Screenshots" };
+const STEP_LABELS: Record<Step, string> = { goal: "Your goal", details: "Questions", account: "Your account" };
 
 const DRAFT_KEY = "rmg-draft";
 
@@ -32,6 +35,14 @@ export function ScoreFlow() {
   const [shots, setShots] = useState<Shot[]>([]);
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState<SubmitError | null>(null);
+
+  // The account step: look up a username, or upload screenshots when that isn't possible.
+  const [mode, setMode] = useState<"username" | "screenshots">("username");
+  const [handle, setHandle] = useState("");
+  const [handleError, setHandleError] = useState<string | null>(null);
+  const [looking, setLooking] = useState<string | null>(null);
+  const [profile, setProfile] = useState<ProfilePreview | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const forwardSteps = useRef(0);
 
   const open = step !== null || analyzing;
@@ -42,6 +53,7 @@ export function ScoreFlow() {
       const draft = JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? "null");
       if (draft && GOAL_IDS.includes(draft.goal)) setGoal(draft.goal);
       if (draft?.answers) setAnswers({ ...EMPTY_ANSWERS, ...draft.answers });
+      if (typeof draft?.handle === "string") setHandle(draft.handle);
     } catch {}
     setRestored(true);
   }, []);
@@ -49,9 +61,9 @@ export function ScoreFlow() {
   useEffect(() => {
     if (!restored) return;
     try {
-      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ goal, answers }));
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ goal, answers, handle }));
     } catch {}
-  }, [restored, goal, answers]);
+  }, [restored, goal, answers, handle]);
 
   useLayoutEffect(() => {
     document.documentElement.toggleAttribute("data-flow", open);
@@ -60,13 +72,13 @@ export function ScoreFlow() {
 
   useEffect(() => {
     if (open) window.scrollTo(0, 0);
-  }, [open, step, analyzing]);
+  }, [open, step, analyzing, mode, profile]);
 
   // Arriving on a later step without the earlier answers (a shared link, a reload): go back to what's missing.
   useEffect(() => {
     if (!restored || analyzing) return;
-    if ((step === "details" || step === "upload") && !goal) router.replace("/?step=goal", { scroll: false });
-    else if (step === "upload" && !AnswersSchema.safeParse(answers).success) router.replace("/?step=details", { scroll: false });
+    if ((step === "details" || step === "account") && !goal) router.replace("/?step=goal", { scroll: false });
+    else if (step === "account" && !AnswersSchema.safeParse(answers).success) router.replace("/?step=details", { scroll: false });
   }, [restored, analyzing, step, goal, answers, router]);
 
   function go(next: Step) {
@@ -84,6 +96,44 @@ export function ScoreFlow() {
     router.replace(index > 0 ? `/?step=${STEPS[index - 1]}` : "/", { scroll: false });
   }
 
+  /** Never a dead end: whenever a lookup can't be used, explain why and offer screenshot upload. */
+  function switchToScreenshots(message: string | null) {
+    setNotice(message);
+    setProfile(null);
+    setMode("screenshots");
+  }
+
+  function switchToUsername() {
+    setNotice(null);
+    setError(null);
+    setMode("username");
+  }
+
+  async function lookUp() {
+    const parsed = parseInstagramHandle(handle);
+    if (!parsed.ok) {
+      setHandleError(parsed.message);
+      return;
+    }
+    setHandleError(null);
+    setError(null);
+    setLooking(parsed.username);
+    try {
+      const res = await fetch("/api/lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ handle: parsed.username }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.profile) setProfile(data.profile);
+      else if (res.status === 400) setHandleError(data.message ?? "That doesn't look like an Instagram username.");
+      else switchToScreenshots(data.message ?? `We couldn't look up @${parsed.username} just now. Add a few screenshots instead.`);
+    } catch {
+      switchToScreenshots("We couldn't reach Instagram just now. Add a few screenshots instead and you'll still get your score.");
+    }
+    setLooking(null);
+  }
+
   async function submit() {
     if (!goal) return;
     setError(null);
@@ -91,7 +141,8 @@ export function ScoreFlow() {
     const form = new FormData();
     form.set("goal", goal);
     form.set("answers", JSON.stringify(answers));
-    shots.forEach((shot, i) => form.append("screenshots", shot.blob, `screenshot-${i + 1}.jpg`));
+    if (mode === "username" && profile) form.set("username", profile.username);
+    else shots.forEach((shot, i) => form.append("screenshots", shot.blob, `screenshot-${i + 1}.jpg`));
     try {
       const res = await fetch("/api/analyze", { method: "POST", body: form });
       const data = await res.json().catch(() => ({}));
@@ -100,6 +151,11 @@ export function ScoreFlow() {
           sessionStorage.removeItem(DRAFT_KEY);
         } catch {}
         router.push(`/r/${data.id}`);
+        return;
+      }
+      if (data.fallback === "screenshots") {
+        switchToScreenshots(data.message ?? null);
+        setAnalyzing(false);
         return;
       }
       setError({
@@ -181,7 +237,7 @@ export function ScoreFlow() {
             </button>
           )}
           {analyzing ? (
-            <Analyzing />
+            <Analyzing profile={mode === "username" ? profile : null} />
           ) : step === "goal" ? (
             <GoalStep
               value={goal}
@@ -191,9 +247,34 @@ export function ScoreFlow() {
               }}
             />
           ) : step === "details" && goal ? (
-            <DetailsStep goal={goal} value={answers} onChange={setAnswers} onDone={() => go("upload")} />
-          ) : step === "upload" ? (
-            <UploadStep shots={shots} onShotsChange={setShots} error={error} onSubmit={submit} />
+            <DetailsStep goal={goal} value={answers} onChange={setAnswers} onDone={() => go("account")} />
+          ) : step === "account" && mode === "username" ? (
+            <AccountStep
+              handle={handle}
+              onHandleChange={(value) => {
+                setHandle(value);
+                setHandleError(null);
+              }}
+              handleError={handleError}
+              looking={looking}
+              profile={profile}
+              onLookup={lookUp}
+              onReset={() => {
+                setProfile(null);
+                setHandle("");
+              }}
+              onScore={submit}
+              onUseScreenshots={() => switchToScreenshots(null)}
+            />
+          ) : step === "account" ? (
+            <UploadStep
+              shots={shots}
+              onShotsChange={setShots}
+              error={error}
+              notice={notice}
+              onSubmit={submit}
+              onUseUsername={switchToUsername}
+            />
           ) : null}
         </main>
       </div>

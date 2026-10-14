@@ -1,4 +1,4 @@
-import { EyeOff, ImageOff, Target } from "lucide-react";
+import { Clock, EyeOff, Target } from "lucide-react";
 import { SITE } from "@/lib/site";
 import { ButtonLink } from "../Button";
 import { Eyebrow } from "../Eyebrow";
@@ -18,8 +18,8 @@ const FULL = [
 ];
 
 const TRUST = [
-  { icon: EyeOff, title: "No login or password", text: "You choose the screenshots. We never connect to your account." },
-  { icon: ImageOff, title: "Screenshots aren't kept", text: "They're used for your analysis and never stored." },
+  { icon: EyeOff, title: "No login or password", text: "We only look at what's public on your profile. We never connect to your account." },
+  { icon: Clock, title: "Nothing kept for long", text: "Profile data is deleted after 24 hours. Uploaded screenshots are never stored." },
   { icon: Target, title: "Judged on your goal", text: "A bakery and a business coach need different things. You're scored on yours." },
 ];
 

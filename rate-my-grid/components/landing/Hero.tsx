@@ -22,8 +22,8 @@ export function Hero() {
             Is your Instagram actually getting you clients? <span className="text-ig">Get your score in 60 seconds.</span>
           </h1>
           <p className="mt-5 max-w-lg text-base leading-relaxed text-ink/80 sm:text-lg">
-            Upload a few screenshots. Get an honest score out of 100, judged on what you want Instagram to do for you, and
-            exactly what to fix.
+            Type your Instagram username. Get an honest score out of 100, judged on what you want Instagram to do for you,
+            and exactly what to fix.
           </p>
           <div className="mt-8">
             <ButtonLink href="/?step=goal" className="w-full sm:w-auto">

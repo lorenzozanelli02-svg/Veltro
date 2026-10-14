@@ -1,4 +1,5 @@
 import { actionLabel, type Answers, type GoalId } from "./goals";
+import type { ProfileMetrics } from "./lookup/metrics";
 import type { FullReport, Report } from "./report";
 
 /**
@@ -40,11 +41,23 @@ function plan(answers: Answers): FullReport["plan"] {
   };
 }
 
-export function mockReport(goal: GoalId, answers: Answers): Report {
+/** With metrics from a looked-up profile, the content and consistency notes quote the real numbers. */
+function metricNotes(m: ProfileMetrics) {
+  const best = (Object.entries(m.engagementByFormat) as [string, number][]).sort((a, b) => b[1] - a[1])[0];
+  const content = m.likesHidden
+    ? "Your like counts are hidden, so engagement is judged on comments: they're low for the size of the account."
+    : `Each post gets ${m.avgLikes} likes and ${m.avgComments} comments on average, ${m.engagementRate ?? "an unknown"}% of your followers.${best ? ` ${best[0] === "Carousel" ? "Carousels" : `${best[0]}s`} do best.` : ""}`;
+  const consistency = `${m.postsLast30Days} post${m.postsLast30Days === 1 ? "" : "s"} in the last 30 days${
+    m.daysSinceLastPost === null ? "" : `, the latest ${m.daysSinceLastPost} day${m.daysSinceLastPost === 1 ? "" : "s"} ago`
+  }. ${m.avgDaysBetweenPosts && m.avgDaysBetweenPosts > 5 ? `That's a post every ${m.avgDaysBetweenPosts} days on average.` : "A steady rhythm."}`;
+  return { content, consistency };
+}
+
+export function mockReport(goal: GoalId, answers: Answers, metrics?: ProfileMetrics): Report {
   const lower = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
   const customer = lower(clip(answers.customer, 48));
   const offer = lower(clip(answers.offer, 60));
-  return {
+  const report: Report = {
     score: 58,
     verdict: VERDICTS[goal],
     categories: {
@@ -122,4 +135,10 @@ export function mockReport(goal: GoalId, answers: Answers): Report {
       plan: plan(answers),
     },
   };
+  if (metrics) {
+    const notes = metricNotes(metrics);
+    report.categories.content.note = notes.content;
+    report.categories.consistency.note = notes.consistency;
+  }
+  return report;
 }

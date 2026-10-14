@@ -10,8 +10,8 @@ const STEPS = [
     text: "Who you want to reach, what you sell, how often you post and what people should do next.",
   },
   {
-    title: "Upload 2 to 5 screenshots",
-    text: "Your profile, your grid and a recent post. Your score is ready in about a minute.",
+    title: "Add your username",
+    text: "We read your bio and your last 12 posts. Private account? Upload a few screenshots instead.",
   },
 ];
 

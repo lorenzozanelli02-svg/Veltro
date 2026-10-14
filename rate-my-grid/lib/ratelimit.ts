@@ -1,11 +1,27 @@
 /**
- * Caps on the analysis endpoint, which is the only thing that costs money per request.
+ * Caps on the endpoints that cost money: the AI analysis and the Instagram lookup.
  * Fixed windows: per visitor (short burst and per day) plus one global daily cap as a spending ceiling.
  */
-export const LIMITS = {
+export type LimitPolicy = {
+  name: string;
+  burst: { max: number; windowSeconds: number };
+  daily: { max: number; windowSeconds: number };
+  globalDaily: () => number;
+};
+
+export const ANALYSIS_LIMITS: LimitPolicy = {
+  name: "analyze",
   burst: { max: 3, windowSeconds: 10 * 60 },
   daily: { max: 8, windowSeconds: 24 * 60 * 60 },
   globalDaily: () => Number(process.env.DAILY_ANALYSIS_CAP ?? 300),
+};
+
+/** Only lookups that reach Apify count; cached ones are free. */
+export const LOOKUP_LIMITS: LimitPolicy = {
+  name: "lookup",
+  burst: { max: 5, windowSeconds: 10 * 60 },
+  daily: { max: 15, windowSeconds: 24 * 60 * 60 },
+  globalDaily: () => Number(process.env.DAILY_LOOKUP_CAP ?? 200),
 };
 
 export type LimitResult = { ok: true } | { ok: false; retryAfterSeconds: number; scope: "visitor" | "global" };
@@ -27,17 +43,17 @@ function memoryCounter(): Counter {
   };
 }
 
-export async function checkRateLimit(visitor: string, counter: Counter = memoryCounter()): Promise<LimitResult> {
+export async function checkRateLimit(visitor: string, policy: LimitPolicy, counter: Counter = memoryCounter()): Promise<LimitResult> {
   for (const [name, rule] of [
-    ["burst", LIMITS.burst],
-    ["daily", LIMITS.daily],
+    ["burst", policy.burst],
+    ["daily", policy.daily],
   ] as const) {
-    const { count, resetInSeconds } = await counter(`rl:${name}:${visitor}`, rule.windowSeconds);
+    const { count, resetInSeconds } = await counter(`rl:${policy.name}:${name}:${visitor}`, rule.windowSeconds);
     if (count > rule.max) return { ok: false, retryAfterSeconds: resetInSeconds, scope: "visitor" };
   }
   const day = new Date().toISOString().slice(0, 10);
-  const { count, resetInSeconds } = await counter(`rl:global:${day}`, 24 * 60 * 60);
-  if (count > LIMITS.globalDaily()) return { ok: false, retryAfterSeconds: resetInSeconds, scope: "global" };
+  const { count, resetInSeconds } = await counter(`rl:${policy.name}:global:${day}`, 24 * 60 * 60);
+  if (count > policy.globalDaily()) return { ok: false, retryAfterSeconds: resetInSeconds, scope: "global" };
   return { ok: true };
 }
 

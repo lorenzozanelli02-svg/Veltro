@@ -1,11 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ProfilePreview } from "@/lib/lookup/types";
 
 const MESSAGES = [
   "Reading your bio",
   "Checking your grid",
   "Looking at your recent posts",
+  "Counting your calls to action",
+  "Comparing to accounts that convert",
+  "Writing your fixes",
+];
+
+const PROFILE_MESSAGES = [
+  "Reading your bio",
+  "Checking your last 12 posts",
+  "Working out your engagement",
   "Counting your calls to action",
   "Comparing to accounts that convert",
   "Writing your fixes",
@@ -25,9 +35,10 @@ function useProgress() {
   return progress;
 }
 
-export function Analyzing() {
+export function Analyzing({ profile = null }: { profile?: ProfilePreview | null }) {
   const [index, setIndex] = useState(0);
   const progress = useProgress();
+  const messages = profile ? PROFILE_MESSAGES : MESSAGES;
 
   useEffect(() => {
     const timer = setInterval(() => setIndex((i) => (i + 1) % MESSAGES.length), 2600);
@@ -62,9 +73,19 @@ export function Analyzing() {
         </svg>
       </div>
 
-      <p className="mt-10 text-xs font-semibold tracking-[0.22em] text-accent uppercase">Scoring your profile</p>
+      {profile ? (
+        <p className="mt-10 flex items-center gap-2.5 text-sm font-semibold">
+          {profile.avatar && (
+            // eslint-disable-next-line @next/next/no-img-element -- small data URL from the lookup
+            <img src={profile.avatar} alt="" className="size-7 rounded-full object-cover ring-1 ring-line" />
+          )}
+          <span className="text-xs tracking-[0.22em] text-accent uppercase">Scoring @{profile.username}</span>
+        </p>
+      ) : (
+        <p className="mt-10 text-xs font-semibold tracking-[0.22em] text-accent uppercase">Scoring your profile</p>
+      )}
       <p key={index} aria-live="polite" className="animate-rise mt-3 min-h-[2.2em] font-display text-4xl leading-none font-extrabold uppercase sm:text-5xl">
-        {MESSAGES[index]}&hellip;
+        {messages[index % messages.length]}&hellip;
       </p>
 
       <div className="mt-8 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-line" role="progressbar" aria-label="Analysis progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}>

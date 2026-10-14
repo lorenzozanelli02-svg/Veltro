@@ -7,8 +7,12 @@ export const metadata: Metadata = { title: "Privacy" };
 
 const SECTIONS = [
   {
+    title: "Looking up an account",
+    body: "When you type a username, we fetch that account's public profile through Apify, a data service: name, bio, link, follower and post counts, and the latest posts with their images, captions, likes and comments. We keep it for 24 hours so looking it up again is quick, then delete it. Private accounts can't be looked up.",
+  },
+  {
     title: "Your screenshots",
-    body: "We send the screenshots you upload to our AI provider, Anthropic, to score your profile. They're held in memory only while that happens and are never saved by us. Anthropic processes them under its commercial terms, which don't allow it to train its models on them.",
+    body: "If you upload screenshots instead, we send them to our AI provider, Anthropic, to score your profile. They're held in memory only while that happens and are never saved by us. Profile data and images from a lookup are sent to Anthropic in the same way. Anthropic processes them under its commercial terms, which don't allow it to train its models on them.",
   },
   {
     title: "Your report",
@@ -20,7 +24,7 @@ const SECTIONS = [
   },
   {
     title: "Abuse protection",
-    body: "We count how many scores come from each IP address for a short time, to stop the service being abused. Those counts expire within a day.",
+    body: "We count how many scores and lookups come from each IP address for a short time, to stop the service being abused. Those counts expire within a day.",
   },
   {
     title: "No accounts, no tracking",

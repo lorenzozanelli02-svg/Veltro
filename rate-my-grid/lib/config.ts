@@ -22,6 +22,10 @@ export function paymentsMode(): Mode {
   return mode(process.env.STRIPE_SECRET_KEY, process.env.MOCK_PAYMENTS);
 }
 
+export function lookupMode(): Mode {
+  return mode(process.env.APIFY_TOKEN, process.env.MOCK_LOOKUP);
+}
+
 export function redisConfig() {
   // Vercel's Upstash integration sets the KV_* names; a direct Upstash database uses the UPSTASH_* ones.
   const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
@@ -34,8 +38,12 @@ export function storeMode(): Mode {
   return demoAllowed() ? "mock" : "off";
 }
 
-/** How long reports are kept. Screenshots are never stored at all. */
+/** How long things are kept. Uploaded screenshots are never stored at all. */
 export const RETENTION = {
   unpaidSeconds: 60 * 60 * 24 * 30,
   paidSeconds: 60 * 60 * 24 * 365,
+  // Instagram lookups (profile data and post images), so repeat lookups don't cost money.
+  lookupSeconds: 60 * 60 * 24,
+  // Private or missing accounts, so retyping the same name doesn't trigger another paid lookup.
+  failedLookupSeconds: 60 * 60 * 6,
 };
