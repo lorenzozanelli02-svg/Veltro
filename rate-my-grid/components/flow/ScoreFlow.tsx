@@ -26,7 +26,10 @@ const DRAFT_KEY = "rmg-draft";
  */
 export function ScoreFlow() {
   const router = useRouter();
-  const param = useSearchParams().get("step");
+  const search = useSearchParams();
+  const param = search.get("step");
+  // A username typed into the homepage's Instagram box.
+  const fromHome = search.get("ig");
   const step = (STEPS as readonly string[]).includes(param ?? "") ? (param as Step) : null;
 
   const [restored, setRestored] = useState(false);
@@ -44,6 +47,8 @@ export function ScoreFlow() {
   const [profile, setProfile] = useState<ProfilePreview | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const forwardSteps = useRef(0);
+  // Set when the username came from the homepage: it's looked up as soon as they reach the account step.
+  const autoLookup = useRef(false);
 
   const open = step !== null || analyzing;
 
@@ -64,6 +69,25 @@ export function ScoreFlow() {
       sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ goal, answers, handle }));
     } catch {}
   }, [restored, goal, answers, handle]);
+
+  // Take the homepage's username (after the draft is restored, so it wins) and drop it from the address.
+  useEffect(() => {
+    if (!restored || fromHome === null) return;
+    setHandle(fromHome);
+    setHandleError(null);
+    setProfile(null);
+    setNotice(null);
+    setMode("username");
+    autoLookup.current = true;
+    router.replace(`/?step=${step ?? "goal"}`, { scroll: false });
+  }, [restored, fromHome, step, router]);
+
+  useEffect(() => {
+    if (step !== "account" || mode !== "username" || !autoLookup.current || looking || profile) return;
+    autoLookup.current = false;
+    lookUp();
+    // lookUp reads the current handle; this only needs to run when they arrive at the step.
+  }, [step, mode, looking, profile]);
 
   useLayoutEffect(() => {
     document.documentElement.toggleAttribute("data-flow", open);
