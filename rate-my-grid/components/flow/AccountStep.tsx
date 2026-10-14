@@ -5,7 +5,7 @@ import { useId } from "react";
 import { parseInstagramHandle } from "@/lib/instagram-handle";
 import type { ProfilePreview } from "@/lib/lookup/types";
 import { Arrow, buttonClass } from "../Button";
-import { StepLayout } from "./StepHeading";
+import { MonoTag, STEP_ACTIONS, StepLayout } from "./StepHeading";
 
 const LOOKED_AT = ["Your name, bio and link", "Your last 12 posts, with likes and comments", "How often you post"];
 
@@ -40,15 +40,16 @@ export function AccountStep({
 
   return (
     <StepLayout
-      title={<>Which account <span className="text-ig">should we score?</span></>}
+      title="Which account should we"
+      accent="score?"
       intro="Paste your Instagram link or type your username."
       aside={
         <div className="mt-8 hidden lg:block">
-          <p className="text-xs font-semibold tracking-[0.18em] text-muted uppercase">What we look at</p>
-          <ul className="mt-4 space-y-2.5 text-[15px] text-ink/85">
+          <MonoTag>What we look at</MonoTag>
+          <ul className="mt-4 space-y-2.5 text-[15px] text-soft">
             {LOOKED_AT.map((item) => (
               <li key={item} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2.5 h-px w-4 shrink-0 bg-accent" />
+                <span aria-hidden="true" className="mt-2.5 h-px w-4 shrink-0 bg-slate-300/50" />
                 {item}
               </li>
             ))}
@@ -61,16 +62,22 @@ export function AccountStep({
     >
       {profile ? (
         <div className="animate-rise">
-          <div className="rounded-3xl border border-accent/30 bg-surface/80 p-5 sm:p-6">
+          <div className="glass rounded-3xl p-5 sm:p-6">
+            <MonoTag className="mb-5 flex items-center gap-2">
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-good" />
+              Account found
+            </MonoTag>
             <div className="flex items-center gap-4">
               {profile.avatar ? (
-                // eslint-disable-next-line @next/next/no-img-element -- small data URL from the lookup
-                <img src={profile.avatar} alt="" className="size-18 shrink-0 rounded-full object-cover ring-2 ring-accent/60 ring-offset-2 ring-offset-surface" />
+                <span className="shrink-0 rounded-full bg-ig p-[2px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- small data URL from the lookup */}
+                  <img src={profile.avatar} alt="" className="size-18 rounded-full border-2 border-slate-950 object-cover" />
+                </span>
               ) : (
                 <span className="size-18 shrink-0 rounded-full bg-raised ring-1 ring-line" />
               )}
               <div className="min-w-0">
-                <p className="flex items-center gap-1.5 text-lg leading-snug font-semibold">
+                <p className="flex items-center gap-1.5 text-lg leading-snug font-medium text-slate-50">
                   <span className="truncate">{profile.fullName || `@${profile.username}`}</span>
                   {profile.isVerified && <BadgeCheck aria-label="Verified" className="size-5 shrink-0 text-accent" />}
                 </p>
@@ -86,19 +93,19 @@ export function AccountStep({
                 ["Followers", profile.followers],
                 ["Following", profile.following],
               ].map(([label, value]) => (
-                <div key={label as string} className="rounded-2xl bg-raised px-2 py-3">
-                  <dd className="font-display text-2xl leading-none font-bold tabular-nums">{count(value as number | null)}</dd>
-                  <dt className="mt-1 text-xs text-muted">{label}</dt>
+                <div key={label as string} className="rounded-2xl border border-slate-400/10 bg-slate-900/50 px-2 py-3">
+                  <dd className="text-2xl leading-none font-light text-slate-50 tabular-nums">{count(value as number | null)}</dd>
+                  <dt className="mt-1.5 font-mono text-[11px] tracking-[0.14em] text-muted uppercase">{label}</dt>
                 </div>
               ))}
             </dl>
-            {profile.bio && <p className="mt-5 line-clamp-3 text-[15px] leading-relaxed whitespace-pre-line text-ink/85">{profile.bio}</p>}
-            <p className="mt-4 text-sm font-semibold text-accent">
+            {profile.bio && <p className="mt-5 line-clamp-3 text-[15px] leading-relaxed whitespace-pre-line text-soft">{profile.bio}</p>}
+            <p className="mt-4 text-sm font-medium text-accent">
               {profile.postsFound > 0 ? `${profile.postsFound} recent posts found` : "No posts found yet"}
             </p>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 mt-8 bg-linear-to-t from-bg from-60% to-transparent px-4 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:bg-none sm:px-0 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-6">
+          <div className={`${STEP_ACTIONS} mt-8 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-6`}>
             <button type="button" onClick={onScore} className={buttonClass({ className: "w-full lg:w-auto lg:min-w-64" })}>
               Get my score
               <Arrow />
@@ -120,7 +127,7 @@ export function AccountStep({
           }}
           noValidate
         >
-          <label htmlFor={id} className="block text-[17px] font-semibold">
+          <label htmlFor={id} className="block text-lg font-medium text-slate-50">
             Instagram username or profile link
           </label>
           <div className="relative mt-3">
@@ -139,14 +146,14 @@ export function AccountStep({
               disabled={looking !== null}
               aria-invalid={handleError ? true : undefined}
               aria-describedby={`${id}-hint`}
-              className="h-14 w-full rounded-2xl border border-line bg-surface pr-4 pl-12 text-base text-ink placeholder:text-muted/60 focus:border-accent focus:outline-none disabled:opacity-60 aria-invalid:border-bad"
+              className="glass h-14 w-full rounded-2xl pr-4 pl-12 text-base text-ink placeholder:text-muted/70 focus:border-accent focus:outline-none disabled:opacity-60 aria-invalid:border-bad"
             />
           </div>
           <p id={`${id}-hint`} className={`mt-2 min-h-5 text-sm ${handleError ? "text-bad" : "text-muted"}`}>
             {handleError ?? (cleaned ? `We'll look up @${cleaned}` : "Public accounts only.")}
           </p>
 
-          <div className="sticky bottom-0 -mx-4 mt-8 bg-linear-to-t from-bg from-60% to-transparent px-4 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:bg-none sm:px-0 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-6">
+          <div className={`${STEP_ACTIONS} mt-8 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-6`}>
             <button type="submit" disabled={looking !== null} className={buttonClass({ className: "w-full lg:w-auto lg:min-w-64" })}>
               {looking ? <Loader2 aria-hidden="true" className="size-5 animate-spin" /> : null}
               {looking ? `Finding @${looking}` : "Find my account"}
@@ -161,7 +168,7 @@ export function AccountStep({
             type="button"
             onClick={onUseScreenshots}
             disabled={looking !== null}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-line px-4 py-4 text-[15px] font-semibold text-muted transition-colors hover:border-accent/50 hover:text-ink disabled:opacity-50 lg:mt-10"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-400/25 px-4 py-4 text-[15px] font-medium text-soft transition-colors hover:border-slate-300/50 hover:text-ink disabled:opacity-50 lg:mt-10"
           >
             <ImagePlus aria-hidden="true" className="size-5" />
             Private account? Upload screenshots instead

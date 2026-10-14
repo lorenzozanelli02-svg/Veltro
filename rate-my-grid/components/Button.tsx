@@ -11,12 +11,12 @@ const SIZES: Record<Size, string> = {
 const VARIANTS: Record<Variant, string> = {
   primary:
     "bg-ig text-white shadow-[0_0_36px_-8px_var(--color-ig-pink)] hover:brightness-110 disabled:bg-none disabled:bg-line disabled:text-muted disabled:shadow-none",
-  secondary: "border border-line bg-surface text-ink hover:border-accent/50 hover:text-accent disabled:text-muted",
+  secondary: "glass text-ink hover:border-slate-300/40 hover:bg-slate-800/60 disabled:text-muted",
 };
 
-/** The Get Seen Get Signed pill button in Instagram colours, for both links and buttons. */
+/** Pill button: the Instagram gradient for the main action, frosted slate for the rest. For links and buttons. */
 export function buttonClass({ size = "lg", variant = "primary", className = "" }: { size?: Size; variant?: Variant; className?: string } = {}) {
-  return `inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors disabled:cursor-not-allowed ${SIZES[size]} ${VARIANTS[variant]} ${className}`;
+  return `inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-wide transition-[color,background-color,border-color,filter] disabled:cursor-not-allowed ${SIZES[size]} ${VARIANTS[variant]} ${className}`;
 }
 
 export function Arrow() {

@@ -1,15 +1,20 @@
-import { Eyebrow } from "../Eyebrow";
+import { AtSign, MessageSquareText, Target } from "lucide-react";
+import { FadeIn, RevealOnScroll } from "@/components/ui/digital-serenity-animated-landing-page";
+import { SectionTitle } from "./SectionTitle";
 
 const STEPS = [
   {
+    icon: Target,
     title: "Pick your goal",
     text: "Clients, sales, a personal brand or a busier shop. You're scored against what you actually want.",
   },
   {
+    icon: MessageSquareText,
     title: "Answer four questions",
     text: "Who you want to reach, what you sell, how often you post and what people should do next.",
   },
   {
+    icon: AtSign,
     title: "Add your username",
     text: "We read your bio and your last 12 posts. Private account? Upload a few screenshots instead.",
   },
@@ -18,23 +23,24 @@ const STEPS = [
 export function HowItWorks() {
   return (
     <section id="how-it-works" aria-labelledby="how-title" className="scroll-mt-8 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="max-w-2xl">
-          <Eyebrow>How it works</Eyebrow>
-          <h2 id="how-title" className="mt-4 font-display text-4xl leading-[0.95] font-extrabold uppercase text-balance sm:text-5xl lg:text-6xl">
-            Your score in <span className="text-ig">three steps</span>
-          </h2>
-        </div>
-        <ol className="mt-10 grid gap-4 sm:grid-cols-3">
-          {STEPS.map((step, i) => (
-            <li key={step.title} className="rounded-2xl border border-line bg-surface/80 p-6">
-              <span className="font-display text-3xl font-extrabold text-ig tabular-nums">0{i + 1}</span>
-              <h3 className="mt-3 text-lg font-semibold">{step.title}</h3>
-              <p className="mt-2 text-[15px] leading-relaxed text-muted">{step.text}</p>
+      <RevealOnScroll className="mx-auto max-w-6xl">
+        <SectionTitle eyebrow="How it works" id="how-title" text="Your score in three" accent="steps" />
+        <ol className="mt-12 grid gap-4 sm:grid-cols-3">
+          {STEPS.map(({ icon: Icon, title, text }, i) => (
+            <li key={title}>
+              <FadeIn at={500 + i * 150} className="glass h-full rounded-2xl p-6 sm:p-7">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs tracking-[0.2em] text-soft/80 tabular-nums">0{i + 1}</span>
+                  <span aria-hidden="true" className="h-px flex-1 bg-linear-to-r from-slate-400/30 to-transparent" />
+                  <Icon aria-hidden="true" className="size-5 text-accent" strokeWidth={1.75} />
+                </div>
+                <h3 className="mt-6 text-xl font-normal text-slate-50">{title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-muted">{text}</p>
+              </FadeIn>
             </li>
           ))}
         </ol>
-      </div>
+      </RevealOnScroll>
     </section>
   );
 }

@@ -6,7 +6,7 @@ import { prepareScreenshot, ScreenshotError } from "@/lib/prepare-image";
 import { UPLOAD } from "@/lib/upload-rules";
 import { Arrow, buttonClass } from "../Button";
 import { ScreenshotGuide } from "./ScreenshotGuide";
-import { StepLayout } from "./StepHeading";
+import { STEP_ACTIONS, StepLayout } from "./StepHeading";
 
 export type Shot = { id: string; name: string; blob: Blob; url: string };
 
@@ -94,18 +94,19 @@ export function UploadStep({
 
   return (
     <StepLayout
-      title={<>Add 2&nbsp;to&nbsp;5 <span className="text-ig">screenshots</span></>}
+      title={"Add 2\u00a0to\u00a05"}
+      accent="screenshots"
       intro="Take these on your phone, then add them here."
       aside={
         <>
           {notice && !error && (
-            <div role="status" className="mt-6 flex gap-3 rounded-2xl border border-warn/40 bg-warn/8 p-4">
+            <div role="status" className="mt-6 flex gap-3 rounded-2xl border border-warn/40 bg-warn/8 p-4 backdrop-blur-sm">
               <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-warn" />
               <p className="text-[15px] leading-relaxed text-ink/90">{notice}</p>
             </div>
           )}
           {error && (
-            <div role="alert" className="mt-6 flex gap-3 rounded-2xl border border-bad/40 bg-bad/8 p-4">
+            <div role="alert" className="mt-6 flex gap-3 rounded-2xl border border-bad/40 bg-bad/8 p-4 backdrop-blur-sm">
               <AlertCircle aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-bad" />
               <div>
                 <p className="font-semibold">{ERROR_TITLES[error.code] ?? "That didn't work"}</p>
@@ -122,11 +123,11 @@ export function UploadStep({
       <div
         ref={thumbs}
         {...dropHandlers}
-        className={`scroll-mb-40 rounded-3xl transition-colors lg:border lg:border-dashed lg:p-6 ${dragging ? "lg:border-accent lg:bg-accent/8" : "lg:border-line lg:bg-surface/60"}`}
+        className={`scroll-mb-40 rounded-3xl transition-colors lg:border lg:border-dashed lg:p-6 lg:backdrop-blur-sm ${dragging ? "lg:border-accent lg:bg-accent/8" : "lg:border-slate-400/25 lg:bg-slate-900/50"}`}
       >
         <div className="flex items-baseline justify-between">
-          <p className="text-[17px] font-semibold">Your screenshots</p>
-          <p className="text-sm text-muted tabular-nums">
+          <p className="text-lg font-medium text-slate-50">Your screenshots</p>
+          <p className="font-mono text-xs tracking-[0.16em] text-muted tabular-nums">
             {shots.length} of {UPLOAD.maxFiles}
           </p>
         </div>
@@ -136,7 +137,7 @@ export function UploadStep({
             <span className="flex size-14 items-center justify-center rounded-2xl bg-ig text-white">
               <ImagePlus aria-hidden="true" className="size-7" />
             </span>
-            <p className="mt-5 text-lg font-semibold">Drag your screenshots here</p>
+            <p className="mt-5 text-xl font-light text-slate-50">Drag your screenshots here</p>
             <p className="mt-1 text-[15px] text-muted">PNG or JPG, up to {UPLOAD.maxFiles} images</p>
             <button
               type="button"
@@ -152,19 +153,19 @@ export function UploadStep({
           {shots.map((shot, i) => (
             <li key={shot.id} className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview */}
-              <img src={shot.url} alt={`Screenshot ${i + 1}`} className="aspect-[9/16] w-full rounded-xl border border-line object-cover object-top" />
+              <img src={shot.url} alt={`Screenshot ${i + 1}`} className="aspect-[9/16] w-full rounded-xl border border-slate-400/20 object-cover object-top" />
               <button
                 type="button"
                 onClick={() => remove(shot.id)}
                 aria-label={`Remove screenshot ${i + 1}`}
-                className="absolute -top-2 -right-2 flex size-8 items-center justify-center rounded-full border border-line bg-bg text-ink shadow-lg hover:text-bad"
+                className="absolute -top-2 -right-2 flex size-8 items-center justify-center rounded-full border border-slate-400/25 bg-slate-950 text-ink shadow-lg hover:text-bad"
               >
                 <X aria-hidden="true" className="size-4" />
               </button>
             </li>
           ))}
           {Array.from({ length: processing }, (_, i) => (
-            <li key={`p${i}`} className="flex aspect-[9/16] items-center justify-center rounded-xl border border-line bg-surface">
+            <li key={`p${i}`} className="glass flex aspect-[9/16] items-center justify-center rounded-xl">
               <Loader2 aria-label="Adding screenshot" className="size-5 animate-spin text-accent" />
             </li>
           ))}
@@ -201,7 +202,7 @@ export function UploadStep({
         )}
       </div>
 
-      <div className="sticky bottom-0 -mx-4 mt-10 bg-linear-to-t from-bg from-60% to-transparent px-4 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:bg-none sm:px-0 lg:mt-8 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-6">
+      <div className={`${STEP_ACTIONS} mt-10 lg:mt-8 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-6`}>
         {shots.length + processing < UPLOAD.minFiles ? (
           <button type="button" onClick={() => input.current?.click()} className={buttonClass({ className: "w-full lg:w-auto lg:min-w-64" })}>
             <ImagePlus aria-hidden="true" className="size-5" />
@@ -222,7 +223,7 @@ export function UploadStep({
       <button
         type="button"
         onClick={onUseUsername}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-line px-4 py-4 text-[15px] font-semibold text-muted transition-colors hover:border-accent/50 hover:text-ink lg:mt-10"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-400/25 px-4 py-4 text-[15px] font-medium text-soft transition-colors hover:border-slate-300/50 hover:text-ink lg:mt-10"
       >
         <Search aria-hidden="true" className="size-5" />
         Look up a username instead

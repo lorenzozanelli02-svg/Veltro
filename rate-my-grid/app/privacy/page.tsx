@@ -38,18 +38,18 @@ export default function PrivacyPage() {
       <Header nav={false} />
       <main className="flex-1 px-4 pt-28 pb-20 sm:px-6 sm:pt-32">
         <div className="mx-auto max-w-2xl">
-          <h1 className="font-display text-5xl leading-[0.92] font-extrabold uppercase sm:text-6xl">
+          <h1 className="text-5xl leading-[1.05] font-extralight tracking-tight text-slate-50 sm:text-6xl">
             Privacy, <span className="text-ig">plainly</span>
           </h1>
           <div className="mt-10 space-y-8">
             {SECTIONS.map((s) => (
               <section key={s.title}>
-                <h2 className="text-lg font-semibold">{s.title}</h2>
+                <h2 className="text-lg font-medium text-slate-50">{s.title}</h2>
                 <p className="mt-2 text-[15px] leading-relaxed text-muted">{s.body}</p>
               </section>
             ))}
             <section>
-              <h2 className="text-lg font-semibold">Questions or deletion requests</h2>
+              <h2 className="text-lg font-medium text-slate-50">Questions or deletion requests</h2>
               <p className="mt-2 text-[15px] leading-relaxed text-muted">
                 Email{" "}
                 <a href={`mailto:${SITE.contactEmail}`} className="text-accent underline-offset-4 hover:underline">
