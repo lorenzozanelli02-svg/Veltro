@@ -22,7 +22,7 @@ export function Header({ nav = true, action }: { nav?: boolean; action?: React.R
                 {item.label}
               </a>
             ))}
-            <ButtonLink href="/?start=1" size="sm">
+            <ButtonLink href="/?step=goal" size="sm">
               Get my score
             </ButtonLink>
           </nav>
