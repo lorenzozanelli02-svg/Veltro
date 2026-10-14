@@ -94,13 +94,18 @@ function postSvg(width: number, index: number, type: ProfilePost["type"] | undef
   </svg>`;
 }
 
+/** The drawing for a stand-in picture: "avatar", or a post id ("mock-post-1" to "mock-post-12"). */
+export function mockPictureSvg(id: string, size: number) {
+  if (id === "avatar") return avatarSvg(size);
+  // Draw each post with its own post's type (a play button on Reels).
+  const index = Math.max(Number(id.match(/(\d+)$/)?.[1] ?? 1) - 1, 0);
+  return postSvg(size, index, TYPES[index % TYPES.length]);
+}
+
 /** Drawn stand-ins for the profile picture and post images; they're real JPEGs, so the rest of the pipeline is exercised. */
 export async function mockImage(id: string, maxSide: number) {
-  const isAvatar = id === "avatar";
-  const size = Math.min(maxSide, isAvatar ? 320 : 540);
-  // Post ids are "mock-post-1" to "mock-post-12"; draw each with its own post's type (a play button on Reels).
-  const index = Math.max(Number(id.match(/(\d+)$/)?.[1] ?? 1) - 1, 0);
-  const svg = isAvatar ? avatarSvg(size) : postSvg(size, index, TYPES[index % TYPES.length]);
+  const size = Math.min(maxSide, id === "avatar" ? 320 : 540);
+  const svg = mockPictureSvg(id, size);
   const jpeg = await sharp(Buffer.from(svg)).flatten({ background: "#000" }).jpeg({ quality: 75 }).toBuffer();
   return { id, mediaType: "image/jpeg" as const, data: jpeg.toString("base64") };
 }

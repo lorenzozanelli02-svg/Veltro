@@ -33,7 +33,7 @@ export function CopyButton({ text, label = "Copy", className = "" }: { text: str
           setTimeout(() => setCopied(false), 2000);
         }
       }}
-      className={`inline-flex min-h-10 items-center gap-2 rounded-full border border-line bg-raised px-4 text-sm font-semibold transition-colors hover:border-accent/50 hover:text-accent ${copied ? "text-accent" : "text-ink"} ${className}`}
+      className={`glass inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors hover:border-slate-300/40 ${copied ? "text-good" : "text-ink"} ${className}`}
     >
       {copied ? <Check aria-hidden="true" className="size-4" /> : <Copy aria-hidden="true" className="size-4" />}
       <span aria-live="polite">{copied ? "Copied" : label}</span>

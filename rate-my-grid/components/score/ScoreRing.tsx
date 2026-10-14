@@ -1,9 +1,9 @@
 import { useId } from "react";
 import { scoreBand, type ScoreBand } from "@/lib/report";
 
-/** Colour for a score's number: pink when strong, Instagram's yellow when middling, red when weak. */
+/** Colour for a score's number: green when strong, amber when middling, red when weak. */
 export const BAND_TEXT: Record<ScoreBand, string> = {
-  strong: "text-accent",
+  strong: "text-good",
   okay: "text-warn",
   weak: "text-bad",
 };

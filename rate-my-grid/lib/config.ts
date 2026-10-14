@@ -2,7 +2,7 @@
  * Which services are live. Without keys the app runs on mocks so the whole flow works locally.
  * Mocks are never used in production unless DEMO_MODE=true, so a missing key can't make the report free.
  */
-function demoAllowed() {
+export function demoAllowed() {
   return process.env.NODE_ENV !== "production" || process.env.DEMO_MODE === "true";
 }
 

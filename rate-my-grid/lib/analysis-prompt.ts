@@ -31,8 +31,10 @@ Use the whole range. 85 or more is rare and means little would change. Below 40 
 
 What to write
 - Verdict: one honest, specific line of at most 110 characters, e.g. "Great content. Nobody knows how to hire you."
+- Summary: two or three sentences (at most 420 characters) under the verdict: what's working, what's holding the account back, and what fixing it would do for their goal.
 - Each category note: one or two sentences on what you saw that earned the score.
 - Free fixes: the two or three changes that would raise the score most, most important first. Each has a short title, what you saw, and exactly what to do, with example wording where it helps.
+- Strengths: the two or three things the account already does well for this goal, strongest first, each with a short title and one or two sentences on what you saw. Only real strengths: if little is working, say what comes closest.
 - Keep, Stop, Start: two to four points each, every one tied to something specific in this account.
 - Rewritten bio: a name field of at most 64 characters (Instagram search reads it, so include what they do) and a bio of at most 150 characters ending in one clear next step that matches what they want people to do. Count characters carefully; a line break counts as one.
 - 10 post ideas: specific to their ideal customer and offer, mixing formats, each with an opening hook they could use word for word.
