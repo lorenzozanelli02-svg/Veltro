@@ -59,7 +59,7 @@ export function LockedReport({ id }: { id: string }) {
             <Lock aria-hidden="true" className="size-5" />
           </span>
           <h2 className="mt-5 font-display text-4xl leading-[0.95] font-extrabold uppercase">
-            Your full report is <span className="text-accent">ready</span>
+            Your full report is <span className="text-ig">ready</span>
           </h2>
           <p className="mt-3 text-[15px] leading-relaxed text-muted">Already written from your screenshots. Unlock it once and keep it.</p>
           <ul className="mt-6 space-y-3.5">

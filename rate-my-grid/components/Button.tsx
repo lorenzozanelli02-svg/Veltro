@@ -10,11 +10,11 @@ const SIZES: Record<Size, string> = {
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-accent text-on-accent shadow-[0_0_36px_-8px_var(--color-accent)] hover:bg-accent-hover disabled:bg-line disabled:text-muted disabled:shadow-none",
+    "bg-ig text-white shadow-[0_0_36px_-8px_var(--color-ig-pink)] hover:brightness-110 disabled:bg-none disabled:bg-line disabled:text-muted disabled:shadow-none",
   secondary: "border border-line bg-surface text-ink hover:border-accent/50 hover:text-accent disabled:text-muted",
 };
 
-/** Same pill as the Get Seen Get Signed buy button, for both links and buttons. */
+/** The Get Seen Get Signed pill button in Instagram colours, for both links and buttons. */
 export function buttonClass({ size = "lg", variant = "primary", className = "" }: { size?: Size; variant?: Variant; className?: string } = {}) {
   return `inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors disabled:cursor-not-allowed ${SIZES[size]} ${VARIANTS[variant]} ${className}`;
 }

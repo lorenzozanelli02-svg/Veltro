@@ -5,13 +5,21 @@ import { CATEGORIES, scoreBand, type Report, type ScoreBand } from "./report";
 const W = 1080;
 const H = 1920;
 const COLORS = {
-  bg: "#050807",
-  line: "#1a2621",
-  ink: "#f1f5f2",
-  muted: "#9aa8a0",
-  accent: "#3be584",
+  bg: "#08070a",
+  line: "#29242f",
+  ink: "#f6f3f7",
+  muted: "#a9a2b1",
+  accent: "#f0418c",
 };
-const BAND: Record<ScoreBand, string> = { strong: "#3be584", okay: "#f5b544", weak: "#ff6b5e" };
+const BAND: Record<ScoreBand, string> = { strong: "#f0418c", okay: "#fcaf45", weak: "#ff5a4f" };
+// Instagram's gradient, yellow to purple.
+const IG = ["#feda77", "#f58529", "#dd2a7b", "#8134af"];
+
+function igGradient(ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number) {
+  const g = ctx.createLinearGradient(x0, y0, x1, y1);
+  IG.forEach((color, i) => g.addColorStop(i / (IG.length - 1), color));
+  return g;
+}
 
 const SHORT_LABELS: Record<string, string> = { callToAction: "Call to action", goalFit: "Goal fit" };
 
@@ -51,10 +59,10 @@ export async function drawShareCard(
   canvas.height = H;
   const ctx = canvas.getContext("2d")!;
 
-  // Background: near-black, a faint grid, and the green floodlight glow behind the ring.
+  // Background: near-black, a faint grid, and Instagram-coloured glows behind the ring.
   ctx.fillStyle = COLORS.bg;
   ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = "rgba(241,245,242,0.045)";
+  ctx.strokeStyle = "rgba(246,243,247,0.045)";
   ctx.lineWidth = 2;
   for (let x = 0; x <= W; x += 90) {
     ctx.beginPath();
@@ -69,15 +77,21 @@ export async function drawShareCard(
     ctx.stroke();
   }
   const fade = ctx.createRadialGradient(W / 2, 700, 200, W / 2, 700, 1100);
-  fade.addColorStop(0, "rgba(5,8,7,0)");
-  fade.addColorStop(1, "rgba(5,8,7,1)");
+  fade.addColorStop(0, "rgba(8,7,10,0)");
+  fade.addColorStop(1, "rgba(8,7,10,1)");
   ctx.fillStyle = fade;
   ctx.fillRect(0, 0, W, H);
-  const glow = ctx.createRadialGradient(W / 2, 690, 0, W / 2, 690, 700);
-  glow.addColorStop(0, "rgba(59,229,132,0.22)");
-  glow.addColorStop(1, "rgba(59,229,132,0)");
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, W, H);
+  for (const [x, y, radius, rgb, alpha] of [
+    [300, 900, 520, "245,133,41", 0.16],
+    [800, 480, 560, "129,52,175", 0.26],
+    [W / 2, 690, 640, "221,42,123", 0.22],
+  ] as const) {
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    glow.addColorStop(0, `rgba(${rgb},${alpha})`);
+    glow.addColorStop(1, `rgba(${rgb},0)`);
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+  }
 
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
@@ -96,7 +110,6 @@ export async function drawShareCard(
   const cx = W / 2;
   const cy = 690;
   const r = 262;
-  const color = BAND[scoreBand(data.score)];
   ctx.lineWidth = 44;
   ctx.lineCap = "round";
   ctx.strokeStyle = COLORS.line;
@@ -104,9 +117,10 @@ export async function drawShareCard(
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.stroke();
   ctx.save();
-  ctx.shadowColor = color;
+  ctx.shadowColor = "rgba(221,42,123,0.8)";
   ctx.shadowBlur = 36;
-  ctx.strokeStyle = color;
+  // Yellow at the bottom left to purple at the top right, like the Instagram logo.
+  ctx.strokeStyle = igGradient(ctx, cx - r, cy + r, cx + r, cy - r);
   ctx.beginPath();
   ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * data.score) / 100);
   ctx.stroke();
@@ -164,8 +178,9 @@ export async function drawShareCard(
   ctx.textAlign = "left";
   ctx.fillStyle = COLORS.ink;
   ctx.fillText(first, W / 2 - total / 2, 1650);
-  ctx.fillStyle = COLORS.accent;
-  ctx.fillText(last, W / 2 - total / 2 + ctx.measureText(first).width, 1650);
+  const lastX = W / 2 - total / 2 + ctx.measureText(first).width;
+  ctx.fillStyle = igGradient(ctx, lastX, 1650, lastX + ctx.measureText(last).width, 1650);
+  ctx.fillText(last, lastX, 1650);
 
   return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), "image/png"));
 }

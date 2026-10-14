@@ -49,7 +49,7 @@ export default async function ReportPage({
         }
       />
       <main className="relative isolate flex-1">
-        <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-[640px] bg-[radial-gradient(70%_55%_at_50%_0%,rgb(59_229_132/0.15),transparent_72%)]" />
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-[640px] bg-[radial-gradient(70%_55%_at_50%_0%,rgb(221_42_123/0.15),transparent_72%)]" />
         <div className="mx-auto max-w-3xl px-4 pt-24 pb-24 sm:px-6 sm:pt-28">
           {report.demo && (
             <p className="mb-8 rounded-2xl border border-warn/40 bg-warn/8 px-4 py-3 text-sm leading-relaxed text-warn">
@@ -83,7 +83,7 @@ export default async function ReportPage({
           <section aria-labelledby="cat-title" className="mt-16">
             <Eyebrow>Breakdown</Eyebrow>
             <h2 id="cat-title" className="mt-3 font-display text-4xl leading-[0.95] font-extrabold uppercase sm:text-5xl">
-              Where you <span className="text-accent">lose points</span>
+              Where you <span className="text-ig">lose points</span>
             </h2>
             <div className="mt-6 rounded-2xl border border-line bg-surface/80 p-5 sm:p-6">
               <CategoryBars categories={report.categories} notes />
@@ -93,7 +93,7 @@ export default async function ReportPage({
           <section aria-labelledby="fix-title" className="mt-16">
             <Eyebrow>Free fixes</Eyebrow>
             <h2 id="fix-title" className="mt-3 font-display text-4xl leading-[0.95] font-extrabold uppercase sm:text-5xl">
-              Fix these <span className="text-accent">first</span>
+              Fix these <span className="text-ig">first</span>
             </h2>
             <div className="mt-6">
               <FreeFixes fixes={report.freeFixes} />

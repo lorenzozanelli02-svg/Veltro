@@ -2,7 +2,7 @@
 
 A one-page site that scores someone's Instagram out of 100 against their goal and tells them what to fix. The score and two or three fixes are free; the full report (Keep / Stop / Start, a rewritten bio, 10 post ideas and a 30-day plan) unlocks with a one-time payment.
 
-Next.js (App Router) + Tailwind CSS v4, with the same dark theme and components as Get Seen Get Signed.
+Next.js (App Router) + Tailwind CSS v4. Same layout, type and components as Get Seen Get Signed, in Instagram's colours (its orange-pink-purple gradient on a near-black background).
 
 > **Status:** step 1 of 4. The whole flow works on a mocked AI response and mocked payments. The real Claude analysis, Stripe and Redis storage come next.
 

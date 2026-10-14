@@ -35,7 +35,7 @@ export default function PrivacyPage() {
       <main className="flex-1 px-4 pt-28 pb-20 sm:px-6 sm:pt-32">
         <div className="mx-auto max-w-2xl">
           <h1 className="font-display text-5xl leading-[0.92] font-extrabold uppercase sm:text-6xl">
-            Privacy, <span className="text-accent">plainly</span>
+            Privacy, <span className="text-ig">plainly</span>
           </h1>
           <div className="mt-10 space-y-8">
             {SECTIONS.map((s) => (

@@ -5,7 +5,7 @@ export function FreeFixes({ fixes }: { fixes: Report["freeFixes"] }) {
     <ol className="grid gap-4">
       {fixes.map((fix, i) => (
         <li key={fix.title} className="rounded-2xl border border-line bg-surface/80 p-5 sm:p-6">
-          <span className="font-display text-3xl font-extrabold text-accent tabular-nums">0{i + 1}</span>
+          <span className="font-display text-3xl font-extrabold text-ig tabular-nums">0{i + 1}</span>
           <h3 className="mt-2 text-lg leading-snug font-semibold">{fix.title}</h3>
           <dl className="mt-4 space-y-3 text-[15px] leading-relaxed">
             <div>

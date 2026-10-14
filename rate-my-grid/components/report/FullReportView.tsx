@@ -44,7 +44,7 @@ export function FullReportView({ full }: { full: FullReport }) {
 
   return (
     <div className="space-y-20">
-      <Section id="kss" eyebrow="Your breakdown" title={<>Keep. Stop. <span className="text-accent">Start.</span></>}>
+      <Section id="kss" eyebrow="Your breakdown" title={<>Keep. Stop. <span className="text-ig">Start.</span></>}>
         <div className="grid gap-4 lg:grid-cols-3">
           {KSS.map(({ key, label, icon: Icon, tone, ring }) => (
             <div key={key} className={`rounded-2xl border bg-surface/80 p-5 sm:p-6 ${ring}`}>
@@ -65,7 +65,7 @@ export function FullReportView({ full }: { full: FullReport }) {
         </div>
       </Section>
 
-      <Section id="bio" eyebrow="Copy and paste" title={<>Your new <span className="text-accent">bio</span></>}>
+      <Section id="bio" eyebrow="Copy and paste" title={<>Your new <span className="text-ig">bio</span></>}>
         <div className="rounded-2xl border border-accent/30 bg-surface/80 p-5 sm:p-6">
           <div className="flex flex-col items-start gap-3 sm:flex-row sm:justify-between sm:gap-4">
             <div className="min-w-0">
@@ -87,12 +87,12 @@ export function FullReportView({ full }: { full: FullReport }) {
         </div>
       </Section>
 
-      <Section id="ideas" eyebrow="Made for your goal" title={<>10 post <span className="text-accent">ideas</span></>}>
+      <Section id="ideas" eyebrow="Made for your goal" title={<>10 post <span className="text-ig">ideas</span></>}>
         <ol className="grid gap-3 sm:grid-cols-2">
           {full.postIdeas.map((idea, i) => (
             <li key={idea.title} className="rounded-2xl border border-line bg-surface/80 p-5">
               <div className="flex items-center justify-between gap-3">
-                <span className="font-display text-2xl font-extrabold text-accent tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-display text-2xl font-extrabold text-ig tabular-nums">{String(i + 1).padStart(2, "0")}</span>
                 <Format value={idea.format} />
               </div>
               <h3 className="mt-2 font-semibold leading-snug">{idea.title}</h3>
@@ -103,7 +103,7 @@ export function FullReportView({ full }: { full: FullReport }) {
         </ol>
       </Section>
 
-      <Section id="plan" eyebrow="Next 30 days" title={<>Your posting <span className="text-accent">plan</span></>}>
+      <Section id="plan" eyebrow="Next 30 days" title={<>Your posting <span className="text-ig">plan</span></>}>
         <p className="max-w-2xl text-[15px] leading-relaxed text-ink/85">{full.plan.summary}</p>
         <div className="mt-8 space-y-5">
           {weeks.map((days, w) => (

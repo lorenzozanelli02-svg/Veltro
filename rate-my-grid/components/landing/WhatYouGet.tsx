@@ -30,7 +30,7 @@ export function WhatYouGet() {
         <div className="max-w-2xl">
           <Eyebrow>What you get</Eyebrow>
           <h2 id="get-title" className="mt-4 font-display text-4xl leading-[0.95] font-extrabold uppercase text-balance sm:text-5xl lg:text-6xl">
-            Free score. <span className="text-accent">Full fix for {SITE.price.label}.</span>
+            Free score. <span className="text-ig">Full fix for {SITE.price.label}.</span>
           </h2>
         </div>
 
@@ -47,7 +47,7 @@ export function WhatYouGet() {
               ))}
             </ul>
           </div>
-          <div className="rounded-3xl border border-accent/30 bg-[radial-gradient(120%_120%_at_50%_0%,rgb(59_229_132/0.12),transparent_60%)] p-6 sm:p-8">
+          <div className="rounded-3xl border border-accent/30 bg-[radial-gradient(120%_120%_at_50%_0%,rgb(221_42_123/0.12),transparent_60%)] p-6 sm:p-8">
             <p className="font-display text-2xl font-extrabold uppercase">Full report</p>
             <p className="mt-1 text-sm font-semibold text-accent">{SITE.price.label} one-time &middot; unlocks instantly</p>
             <ul className="mt-6 space-y-4">
@@ -73,9 +73,9 @@ export function WhatYouGet() {
           ))}
         </ul>
 
-        <div className="mt-16 rounded-3xl border border-accent/25 bg-[radial-gradient(120%_140%_at_50%_0%,rgb(59_229_132/0.14),transparent_60%)] px-6 py-12 text-center sm:px-12 sm:py-16">
+        <div className="mt-16 rounded-3xl border border-accent/25 bg-[radial-gradient(120%_140%_at_50%_0%,rgb(221_42_123/0.14),transparent_60%)] px-6 py-12 text-center sm:px-12 sm:py-16">
           <h2 className="font-display text-4xl leading-[0.95] font-extrabold uppercase text-balance sm:text-5xl">
-            Ready to see <span className="text-accent">your score?</span>
+            Ready to see <span className="text-ig">your score?</span>
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink/80 sm:text-lg">
             It takes about a minute, and the score is free.

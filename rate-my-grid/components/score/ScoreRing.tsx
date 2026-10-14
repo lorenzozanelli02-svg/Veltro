@@ -1,38 +1,43 @@
+import { useId } from "react";
 import { scoreBand, type ScoreBand } from "@/lib/report";
 
-export const BAND_COLOR: Record<ScoreBand, string> = {
-  strong: "var(--color-accent)",
-  okay: "var(--color-warn)",
-  weak: "var(--color-bad)",
-};
-
+/** Colour for a score's number: pink when strong, Instagram's yellow when middling, red when weak. */
 export const BAND_TEXT: Record<ScoreBand, string> = {
   strong: "text-accent",
   okay: "text-warn",
   weak: "text-bad",
 };
 
-/** Big score out of 100 inside a ring that fills to the score, like an activity ring. */
+/** Big score out of 100 inside a ring that fills to the score in the Instagram gradient, like an activity ring. */
 export function ScoreRing({ score, className = "", label = true }: { score: number; className?: string; label?: boolean }) {
+  const gradientId = `ring-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const r = 52;
   const c = 2 * Math.PI * r;
   const dash = (c * score) / 100;
-  const color = BAND_COLOR[scoreBand(score)];
   return (
     <div className={`@container relative aspect-square ${className}`}>
       <svg viewBox="0 0 120 120" className="size-full -rotate-90 overflow-visible" aria-hidden="true">
+        <defs>
+          {/* Yellow at the bottom left to purple at the top right, like the Instagram logo (the SVG is rotated -90°). */}
+          <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#feda77" />
+            <stop offset="30%" stopColor="#f58529" />
+            <stop offset="60%" stopColor="#dd2a7b" />
+            <stop offset="100%" stopColor="#8134af" />
+          </linearGradient>
+        </defs>
         <circle cx="60" cy="60" r={r} fill="none" stroke="var(--color-line)" strokeWidth="9" />
         <circle
           cx="60"
           cy="60"
           r={r}
           fill="none"
-          stroke={color}
+          stroke={`url(#${gradientId})`}
           strokeWidth="9"
           strokeLinecap="round"
           strokeDasharray={`${dash} ${c}`}
           className="ring-fill"
-          style={{ "--c": c, filter: `drop-shadow(0 0 6px ${color})` } as React.CSSProperties}
+          style={{ "--c": c, filter: "drop-shadow(0 0 6px rgb(221 42 123 / 0.7))" } as React.CSSProperties}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">

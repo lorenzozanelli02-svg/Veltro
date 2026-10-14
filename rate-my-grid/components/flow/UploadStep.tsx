@@ -72,7 +72,7 @@ export function UploadStep({
 
   return (
     <div>
-      <StepHeading title={<>Add 2&nbsp;to&nbsp;5 <span className="text-accent">screenshots</span></>}>
+      <StepHeading title={<>Add 2&nbsp;to&nbsp;5 <span className="text-ig">screenshots</span></>}>
         Take these on your phone, then add them here.
       </StepHeading>
 

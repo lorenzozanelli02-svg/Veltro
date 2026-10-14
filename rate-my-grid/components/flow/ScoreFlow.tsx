@@ -117,7 +117,7 @@ export function ScoreFlow() {
 
   return (
     <div className="relative isolate flex min-h-dvh flex-col">
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(80%_70%_at_50%_0%,rgb(59_229_132/0.1),transparent_70%)]" />
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(80%_70%_at_50%_0%,rgb(221_42_123/0.1),transparent_70%)]" />
       <div className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 sm:px-6">
         <header className="flex h-16 items-center justify-between">
           {analyzing ? (
@@ -145,7 +145,7 @@ export function ScoreFlow() {
         {!analyzing && (
           <div className="flex gap-1.5" aria-label={`Step ${index + 1} of ${STEPS.length}`} role="img">
             {STEPS.map((s, i) => (
-              <div key={s} className={`h-1 flex-1 rounded-full transition-colors ${i <= index ? "bg-accent" : "bg-line"}`} />
+              <div key={s} className={`h-1 flex-1 rounded-full transition-colors ${i <= index ? "bg-ig" : "bg-line"}`} />
             ))}
           </div>
         )}

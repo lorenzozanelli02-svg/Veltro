@@ -14,7 +14,7 @@ export function ExampleCard() {
         <div className="mt-5 flex items-center gap-5">
           <ScoreRing score={EXAMPLE.score} className="w-30 shrink-0 sm:w-34" />
           <p className="font-display text-[1.6rem] leading-[0.95] font-extrabold uppercase sm:text-3xl">
-            &ldquo;Great content. <span className="text-accent">Nobody knows how to hire you.</span>&rdquo;
+            &ldquo;Great content. <span className="text-ig">Nobody knows how to hire you.</span>&rdquo;
           </p>
         </div>
         <div className="mt-6">

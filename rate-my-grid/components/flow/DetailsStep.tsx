@@ -39,7 +39,7 @@ export function DetailsStep({
 
   return (
     <form onSubmit={submit} noValidate>
-      <StepHeading title={<>Four quick <span className="text-accent">questions</span></>}>
+      <StepHeading title={<>Four quick <span className="text-ig">questions</span></>}>
         Short answers are fine. They make your score specific to you.
       </StepHeading>
 

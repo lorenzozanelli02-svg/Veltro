@@ -1,21 +1,40 @@
 @import "tailwindcss";
 
 /*
-  Colour tokens, shared with the Get Seen Get Signed site: near-black background
-  and one neon green accent. `warn` and `bad` only colour low scores.
+  Colour tokens. Layout and type follow the Get Seen Get Signed site; the colours are
+  Instagram's: a near-black background, the orange → pink → purple gradient for
+  headline accents, buttons and score rings, and its pink as the solid accent for
+  small text and icons. `warn` and `bad` mark middling and weak scores.
 */
 @theme {
-  --color-bg: #050807;
-  --color-surface: #0a100d;
-  --color-raised: #101814;
-  --color-line: #1a2621;
-  --color-ink: #f1f5f2;
-  --color-muted: #9aa8a0;
-  --color-accent: #3be584;
-  --color-accent-hover: #6cf0a5;
-  --color-on-accent: #03130a;
-  --color-warn: #f5b544;
-  --color-bad: #ff6b5e;
+  --color-bg: #08070a;
+  --color-surface: #110f14;
+  --color-raised: #19161d;
+  --color-line: #29242f;
+  --color-ink: #f6f3f7;
+  --color-muted: #a9a2b1;
+  --color-accent: #f0418c;
+  --color-accent-hover: #ff6aa6;
+  --color-on-accent: #ffffff;
+  --color-warn: #fcaf45;
+  --color-bad: #ff5a4f;
+  --color-ig-yellow: #feda77;
+  --color-ig-orange: #f58529;
+  --color-ig-pink: #dd2a7b;
+  --color-ig-purple: #8134af;
+  --color-ig-blue: #515bd4;
+}
+
+/* Instagram gradient as a fill (buttons, bars) and as text (headline accents). */
+@utility bg-ig {
+  background-image: linear-gradient(100deg, var(--color-ig-orange) 0%, var(--color-ig-pink) 45%, var(--color-ig-purple) 80%, var(--color-ig-blue) 100%);
+}
+
+@utility text-ig {
+  background-image: linear-gradient(95deg, var(--color-ig-yellow) 0%, var(--color-ig-orange) 22%, var(--color-ig-pink) 55%, #a85be0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @theme inline {

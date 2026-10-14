@@ -14,7 +14,7 @@ const ICONS: Record<GoalId, typeof Users> = {
 export function GoalStep({ value, onChoose }: { value: GoalId | null; onChoose: (goal: GoalId) => void }) {
   return (
     <>
-      <StepHeading title={<>What&rsquo;s your Instagram <span className="text-accent">for?</span></>}>
+      <StepHeading title={<>What&rsquo;s your Instagram <span className="text-ig">for?</span></>}>
         Everything is judged against this.
       </StepHeading>
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -28,7 +28,7 @@ export function GoalStep({ value, onChoose }: { value: GoalId | null; onChoose: 
               onClick={() => onChoose(goal.id)}
               className="group flex min-h-22 w-full items-center gap-4 rounded-2xl border border-line bg-surface p-4 text-left transition-colors hover:border-accent/50 aria-pressed:border-accent aria-pressed:bg-accent/8 sm:min-h-36 sm:flex-col sm:items-start sm:p-5"
             >
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-raised text-accent ring-1 ring-line group-aria-pressed:bg-accent group-aria-pressed:text-on-accent">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-raised text-accent ring-1 ring-line group-aria-pressed:bg-ig group-aria-pressed:text-white">
                 <Icon aria-hidden="true" className="size-6" strokeWidth={2} />
               </span>
               <span className="min-w-0 flex-1">

@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden">
       {/* Floodlight glow from the top, and a faint grid that fades out towards the edges. */}
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-[720px] bg-[radial-gradient(70%_55%_at_50%_0%,rgb(59_229_132/0.17),transparent_72%)]" />
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-[720px] bg-[radial-gradient(45%_45%_at_15%_0%,rgb(245_133_41/0.16),transparent_70%),radial-gradient(50%_50%_at_85%_5%,rgb(129_52_175/0.24),transparent_72%),radial-gradient(70%_55%_at_50%_0%,rgb(221_42_123/0.18),transparent_72%)]" />
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgb(241_245_242/0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgb(241_245_242/0.035)_1px,transparent_1px)] mask-[radial-gradient(60%_50%_at_50%_20%,black,transparent)] bg-size-[56px_56px]"
@@ -19,7 +19,7 @@ export function Hero() {
             id="hero-title"
             className="mt-4 font-display text-[2.6rem] leading-[0.92] font-extrabold tracking-[0.005em] uppercase text-balance sm:text-6xl lg:text-[4.25rem] xl:text-7xl"
           >
-            Is your Instagram actually getting you clients? <span className="text-accent">Get your score in 60 seconds.</span>
+            Is your Instagram actually getting you clients? <span className="text-ig">Get your score in 60 seconds.</span>
           </h1>
           <p className="mt-5 max-w-lg text-base leading-relaxed text-ink/80 sm:text-lg">
             Upload a few screenshots. Get an honest score out of 100, judged on what you want Instagram to do for you, and
