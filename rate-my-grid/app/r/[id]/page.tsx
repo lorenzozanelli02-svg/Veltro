@@ -50,7 +50,7 @@ export default async function ReportPage({
       />
       <main className="relative isolate flex-1">
         <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-[640px] bg-[radial-gradient(70%_55%_at_50%_0%,rgb(221_42_123/0.15),transparent_72%)]" />
-        <div className="mx-auto max-w-3xl px-4 pt-24 pb-24 sm:px-6 sm:pt-28">
+        <div className="mx-auto max-w-3xl px-4 pt-24 pb-24 sm:px-6 sm:pt-28 lg:max-w-7xl lg:px-8 lg:pt-32">
           {report.demo && (
             <p className="mb-8 rounded-2xl border border-warn/40 bg-warn/8 px-4 py-3 text-sm leading-relaxed text-warn">
               Demo report: these results are made up while the AI isn&rsquo;t connected. They don&rsquo;t reflect your screenshots.
@@ -62,35 +62,38 @@ export default async function ReportPage({
             </p>
           )}
 
-          <section aria-labelledby="score-title" className="text-center sm:text-left">
-            <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
-              <Eyebrow>Your Instagram score</Eyebrow>
-              <span className="rounded-full bg-raised px-3 py-1 text-xs font-semibold text-muted ring-1 ring-line">Goal: {goalLabel}</span>
-            </div>
-            <div className="mt-8 flex flex-col items-center gap-8 sm:flex-row sm:gap-10">
-              <ScoreRing score={report.score} className="w-56 shrink-0 sm:w-60" />
-              <div>
-                <h1 id="score-title" className="font-display text-[2.6rem] leading-[0.92] font-extrabold uppercase text-balance sm:text-5xl">
-                  &ldquo;{report.verdict}&rdquo;
-                </h1>
-                <div className="mt-6 flex justify-center sm:justify-start">
-                  <ShareButton data={{ score: report.score, verdict: report.verdict, categories: report.categories, goalLabel }} />
+          {/* Computer: the score on the left and the breakdown beside it. */}
+          <div className="lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-16 xl:gap-24">
+            <section aria-labelledby="score-title" className="text-center sm:text-left lg:sticky lg:top-10">
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+                <Eyebrow>Your Instagram score</Eyebrow>
+                <span className="rounded-full bg-raised px-3 py-1 text-xs font-semibold text-muted ring-1 ring-line">Goal: {goalLabel}</span>
+              </div>
+              <div className="mt-8 flex flex-col items-center gap-8 sm:flex-row sm:gap-10 lg:flex-col lg:items-start">
+                <ScoreRing score={report.score} className="w-56 shrink-0 sm:w-60 lg:w-72" />
+                <div>
+                  <h1 id="score-title" className="font-display text-[2.6rem] leading-[0.92] font-extrabold uppercase text-balance sm:text-5xl">
+                    &ldquo;{report.verdict}&rdquo;
+                  </h1>
+                  <div className="mt-6 flex justify-center sm:justify-start">
+                    <ShareButton data={{ score: report.score, verdict: report.verdict, categories: report.categories, goalLabel }} />
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <section aria-labelledby="cat-title" className="mt-16">
-            <Eyebrow>Breakdown</Eyebrow>
-            <h2 id="cat-title" className="mt-3 font-display text-4xl leading-[0.95] font-extrabold uppercase sm:text-5xl">
-              Where you <span className="text-ig">lose points</span>
-            </h2>
-            <div className="mt-6 rounded-2xl border border-line bg-surface/80 p-5 sm:p-6">
-              <CategoryBars categories={report.categories} notes />
-            </div>
-          </section>
+            <section aria-labelledby="cat-title" className="mt-16 lg:mt-0">
+              <Eyebrow>Breakdown</Eyebrow>
+              <h2 id="cat-title" className="mt-3 font-display text-4xl leading-[0.95] font-extrabold uppercase sm:text-5xl">
+                Where you <span className="text-ig">lose points</span>
+              </h2>
+              <div className="mt-6 rounded-2xl border border-line bg-surface/80 p-5 sm:p-6">
+                <CategoryBars categories={report.categories} notes />
+              </div>
+            </section>
+          </div>
 
-          <section aria-labelledby="fix-title" className="mt-16">
+          <section aria-labelledby="fix-title" className="mt-16 lg:mt-24">
             <Eyebrow>Free fixes</Eyebrow>
             <h2 id="fix-title" className="mt-3 font-display text-4xl leading-[0.95] font-extrabold uppercase sm:text-5xl">
               Fix these <span className="text-ig">first</span>
@@ -100,7 +103,7 @@ export default async function ReportPage({
             </div>
           </section>
 
-          <div id="full-report" className="mt-20 scroll-mt-8">
+          <div id="full-report" className="mt-20 scroll-mt-8 lg:mt-28">
             {report.full ? <FullReportView full={report.full} /> : <LockedReport id={report.id} />}
           </div>
 

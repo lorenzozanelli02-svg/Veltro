@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import { ACTIONS, AnswersSchema, FREQUENCIES, goalById, LIMITS, type Answers, type GoalId } from "@/lib/goals";
 import { Arrow, buttonClass } from "../Button";
-import { StepHeading } from "./StepHeading";
+import { StepLayout } from "./StepHeading";
 
 export type DraftAnswers = { customer: string; offer: string; frequency?: Answers["frequency"]; action?: Answers["action"] };
 
@@ -38,51 +38,57 @@ export function DetailsStep({
   }
 
   return (
-    <form onSubmit={submit} noValidate>
-      <StepHeading title={<>Four quick <span className="text-ig">questions</span></>}>
-        Short answers are fine. They make your score specific to you.
-      </StepHeading>
+    <StepLayout
+      title={<>Four quick <span className="text-ig">questions</span></>}
+      intro="Short answers are fine. They make your score specific to you."
+      aside={
+        <p className="mt-6 hidden rounded-full bg-raised px-3.5 py-1.5 text-sm font-semibold text-muted ring-1 ring-line lg:inline-flex">
+          Goal: {hints.label}
+        </p>
+      }
+    >
+      <form onSubmit={submit} noValidate>
+        <div className="space-y-8">
+          <TextQuestion
+            label="Who's your ideal customer?"
+            placeholder={hints.customerHint}
+            value={value.customer}
+            max={LIMITS.customer}
+            error={showErrors && missing.customer ? "Tell us who you want to reach." : null}
+            onChange={(customer) => onChange({ ...value, customer })}
+          />
+          <TextQuestion
+            label="What do you sell?"
+            placeholder={hints.offerHint}
+            value={value.offer}
+            max={LIMITS.offer}
+            error={showErrors && missing.offer ? "Tell us what you offer, even roughly." : null}
+            onChange={(offer) => onChange({ ...value, offer })}
+          />
+          <ChoiceQuestion
+            label="How often do you post?"
+            options={FREQUENCIES}
+            value={value.frequency}
+            error={showErrors && missing.frequency ? "Pick the closest one." : null}
+            onChange={(frequency) => onChange({ ...value, frequency })}
+          />
+          <ChoiceQuestion
+            label="What should people do after finding you?"
+            options={ACTIONS}
+            value={value.action}
+            error={showErrors && missing.action ? "Pick the one that matters most." : null}
+            onChange={(action) => onChange({ ...value, action })}
+          />
+        </div>
 
-      <div className="mt-8 space-y-8">
-        <TextQuestion
-          label="Who's your ideal customer?"
-          placeholder={hints.customerHint}
-          value={value.customer}
-          max={LIMITS.customer}
-          error={showErrors && missing.customer ? "Tell us who you want to reach." : null}
-          onChange={(customer) => onChange({ ...value, customer })}
-        />
-        <TextQuestion
-          label="What do you sell?"
-          placeholder={hints.offerHint}
-          value={value.offer}
-          max={LIMITS.offer}
-          error={showErrors && missing.offer ? "Tell us what you offer, even roughly." : null}
-          onChange={(offer) => onChange({ ...value, offer })}
-        />
-        <ChoiceQuestion
-          label="How often do you post?"
-          options={FREQUENCIES}
-          value={value.frequency}
-          error={showErrors && missing.frequency ? "Pick the closest one." : null}
-          onChange={(frequency) => onChange({ ...value, frequency })}
-        />
-        <ChoiceQuestion
-          label="What should people do after finding you?"
-          options={ACTIONS}
-          value={value.action}
-          error={showErrors && missing.action ? "Pick the one that matters most." : null}
-          onChange={(action) => onChange({ ...value, action })}
-        />
-      </div>
-
-      <div className="sticky bottom-0 -mx-4 mt-10 bg-linear-to-t from-bg from-60% to-transparent px-4 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:bg-none sm:px-0">
-        <button type="submit" className={buttonClass({ className: "w-full" })}>
-          Continue
-          <Arrow />
-        </button>
-      </div>
-    </form>
+        <div className="sticky bottom-0 -mx-4 mt-10 bg-linear-to-t from-bg from-60% to-transparent px-4 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:bg-none sm:px-0 lg:flex lg:justify-end">
+          <button type="submit" className={buttonClass({ className: "w-full lg:w-auto lg:min-w-64" })}>
+            Continue
+            <Arrow />
+          </button>
+        </div>
+      </form>
+    </StepLayout>
   );
 }
 

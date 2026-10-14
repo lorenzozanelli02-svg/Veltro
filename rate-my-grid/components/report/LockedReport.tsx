@@ -17,7 +17,7 @@ const INCLUDED = [
 function Placeholder() {
   const bar = (w: string) => <div className="h-3 rounded-full bg-muted/30" style={{ width: w }} />;
   return (
-    <div aria-hidden="true" className="pointer-events-none space-y-10 select-none blur-[5px]">
+    <div aria-hidden="true" className="pointer-events-none grid gap-10 select-none blur-[5px] lg:grid-cols-3 lg:gap-5">
       {["Keep", "Stop", "Start"].map((title) => (
         <div key={title} className="rounded-2xl border border-line bg-surface p-6">
           <p className="font-display text-2xl font-extrabold text-accent uppercase">{title}</p>
@@ -45,6 +45,14 @@ function Placeholder() {
           {bar("55%")}
         </div>
       </div>
+      <div className="hidden rounded-2xl border border-line bg-surface p-6 lg:block">
+        <p className="font-display text-2xl font-extrabold uppercase">30-day plan</p>
+        <div className="mt-4 space-y-3">
+          {bar("70%")}
+          {bar("85%")}
+          {bar("60%")}
+        </div>
+      </div>
     </div>
   );
 }
@@ -53,7 +61,7 @@ export function LockedReport({ id }: { id: string }) {
   return (
     <div className="grid *:col-start-1 *:row-start-1">
       <Placeholder />
-      <div className="relative z-10 flex items-start justify-center px-1 pt-14">
+      <div className="relative z-10 flex items-start justify-center px-1 pt-14 lg:items-center lg:pt-0">
         <div className="w-full max-w-md rounded-3xl border border-accent/30 bg-surface/95 p-6 shadow-2xl shadow-black/70 backdrop-blur-md sm:p-8">
           <span className="flex size-12 items-center justify-center rounded-full bg-accent/12 text-accent ring-1 ring-accent/30">
             <Lock aria-hidden="true" className="size-5" />

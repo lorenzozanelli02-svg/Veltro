@@ -66,7 +66,7 @@ export function FullReportView({ full }: { full: FullReport }) {
       </Section>
 
       <Section id="bio" eyebrow="Copy and paste" title={<>Your new <span className="text-ig">bio</span></>}>
-        <div className="rounded-2xl border border-accent/30 bg-surface/80 p-5 sm:p-6">
+        <div className="rounded-2xl border border-accent/30 bg-surface/80 p-5 sm:p-6 lg:grid lg:grid-cols-2 lg:gap-x-10 lg:p-8">
           <div className="flex flex-col items-start gap-3 sm:flex-row sm:justify-between sm:gap-4">
             <div className="min-w-0">
               <p className="text-xs font-semibold tracking-[0.16em] text-muted uppercase">Name field</p>
@@ -74,7 +74,7 @@ export function FullReportView({ full }: { full: FullReport }) {
             </div>
             <CopyButton text={full.bio.name} label="Copy name" className="shrink-0" />
           </div>
-          <div className="mt-6 flex flex-col items-start gap-3 border-t border-line pt-6 sm:flex-row sm:justify-between sm:gap-4">
+          <div className="mt-6 flex flex-col items-start gap-3 border-t border-line pt-6 sm:flex-row sm:justify-between sm:gap-4 lg:mt-0 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10">
             <div className="min-w-0">
               <p className="text-xs font-semibold tracking-[0.16em] text-muted uppercase">
                 Bio <span className="tracking-normal normal-case tabular-nums">({[...full.bio.text].length}/150)</span>
@@ -83,7 +83,7 @@ export function FullReportView({ full }: { full: FullReport }) {
             </div>
             <CopyButton text={full.bio.text} label="Copy bio" className="shrink-0" />
           </div>
-          <p className="mt-6 border-t border-line pt-5 text-[15px] leading-relaxed text-muted">{full.bio.why}</p>
+          <p className="mt-6 border-t border-line pt-5 text-[15px] leading-relaxed text-muted lg:col-span-2 lg:mt-8">{full.bio.why}</p>
         </div>
       </Section>
 
@@ -105,9 +105,9 @@ export function FullReportView({ full }: { full: FullReport }) {
 
       <Section id="plan" eyebrow="Next 30 days" title={<>Your posting <span className="text-ig">plan</span></>}>
         <p className="max-w-2xl text-[15px] leading-relaxed text-ink/85">{full.plan.summary}</p>
-        <div className="mt-8 space-y-5">
+        <div className="mt-8 grid gap-5 lg:grid-cols-2 lg:items-start lg:gap-x-8">
           {weeks.map((days, w) => (
-            <details key={w} open={w === 0} className="group">
+            <details key={w} open={w < 2} className="group">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-1 [&::-webkit-details-marker]:hidden">
                 <span className="text-xs font-semibold tracking-[0.2em] text-accent uppercase">Week {w + 1}</span>
                 <span className="flex items-center gap-1.5 text-sm text-muted">

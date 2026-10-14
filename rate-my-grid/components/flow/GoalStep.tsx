@@ -2,7 +2,7 @@
 
 import { ChevronRight, MapPin, ShoppingBag, Sparkles, Users } from "lucide-react";
 import { GOALS, type GoalId } from "@/lib/goals";
-import { StepHeading } from "./StepHeading";
+import { StepLayout } from "./StepHeading";
 
 const ICONS: Record<GoalId, typeof Users> = {
   clients: Users,
@@ -13,11 +13,17 @@ const ICONS: Record<GoalId, typeof Users> = {
 
 export function GoalStep({ value, onChoose }: { value: GoalId | null; onChoose: (goal: GoalId) => void }) {
   return (
-    <>
-      <StepHeading title={<>What&rsquo;s your Instagram <span className="text-ig">for?</span></>}>
-        Everything is judged against this.
-      </StepHeading>
-      <div className="mt-8 grid gap-3 sm:grid-cols-2">
+    <StepLayout
+      title={<>What&rsquo;s your Instagram <span className="text-ig">for?</span></>}
+      intro="Everything is judged against this."
+      aside={
+        <p className="mt-6 hidden max-w-sm text-[15px] leading-relaxed text-muted lg:block">
+          A coach needs DMs and bookings. A café needs people through the door. You&rsquo;re scored on what you want, not
+          on follower counts.
+        </p>
+      }
+    >
+      <div className="grid gap-3 sm:grid-cols-2 lg:gap-4">
         {GOALS.map((goal) => {
           const Icon = ICONS[goal.id];
           return (
@@ -40,6 +46,6 @@ export function GoalStep({ value, onChoose }: { value: GoalId | null; onChoose: 
           );
         })}
       </div>
-    </>
+    </StepLayout>
   );
 }
