@@ -52,7 +52,7 @@ export function Hero() {
       </div>
 
       {/* What they'll get, just under the form. */}
-      <div className="mx-auto max-w-md px-4 pt-16 pb-20 sm:px-6 sm:pt-20 sm:pb-28">
+      <div className="mx-auto max-w-5xl px-4 pt-16 pb-20 sm:px-6 sm:pt-20 sm:pb-28">
         <ExampleCard />
       </div>
     </section>

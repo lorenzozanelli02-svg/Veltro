@@ -124,3 +124,8 @@ label {
   transform-origin: left;
   animation: bar-fill 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 250ms both;
 }
+
+/* Waiting to scroll into view (see components/score/PlayWhenVisible.tsx); removing the attribute replays them. */
+[data-anim="wait"] :is(.ring-fill, .bar-fill, .animate-rise) {
+  animation: none;
+}

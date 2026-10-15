@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { scoreBand, type ScoreBand } from "@/lib/report";
+import { CountUp } from "./PlayWhenVisible";
 
 /** Colour for a score's number: pink when strong, Instagram's yellow when middling, red when weak. */
 export const BAND_TEXT: Record<ScoreBand, string> = {
@@ -8,8 +9,28 @@ export const BAND_TEXT: Record<ScoreBand, string> = {
   weak: "text-bad",
 };
 
-/** Big score out of 100 inside a ring that fills to the score in the Instagram gradient, like an activity ring. */
-export function ScoreRing({ score, className = "", label = true }: { score: number; className?: string; label?: boolean }) {
+/** What a score means, in a few words. */
+export const BAND_LABEL: Record<ScoreBand, string> = {
+  strong: "Working well",
+  okay: "Needs work",
+  weak: "Holding you back",
+};
+
+/**
+ * Big score out of 100 inside a ring that fills to the score in the Instagram gradient, like an activity
+ * ring. With `countUp`, the number counts up as the ring fills.
+ */
+export function ScoreRing({
+  score,
+  className = "",
+  label = true,
+  countUp = false,
+}: {
+  score: number;
+  className?: string;
+  label?: boolean;
+  countUp?: boolean;
+}) {
   const gradientId = `ring-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const r = 52;
   const c = 2 * Math.PI * r;
@@ -42,8 +63,17 @@ export function ScoreRing({ score, className = "", label = true }: { score: numb
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="font-display text-[38cqw] leading-[0.85] font-extrabold tabular-nums">
-          <span className="sr-only">Score: </span>
-          {score}
+          {countUp ? (
+            <>
+              <span className="sr-only">Score: {score}</span>
+              <CountUp to={score} />
+            </>
+          ) : (
+            <>
+              <span className="sr-only">Score: </span>
+              {score}
+            </>
+          )}
         </span>
         {label && <span className="mt-[2cqw] text-[8cqw] font-semibold tracking-[0.18em] text-muted uppercase">out of 100</span>}
       </div>
