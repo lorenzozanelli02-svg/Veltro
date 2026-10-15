@@ -17,7 +17,8 @@ export type ProfilePost = {
 export type Profile = {
   username: string;
   fullName: string;
-  bio: string;
+  /** "" when the account has no bio; null when the lookup didn't return the field at all. */
+  bio: string | null;
   avatarUrl: string | null;
   externalUrl: string | null;
   followers: number | null;
@@ -26,6 +27,8 @@ export type Profile = {
   category: string | null;
   isVerified: boolean;
   isBusiness: boolean;
+  /** Number of story highlights, when the lookup returns it. */
+  highlights: number | null;
   /** Newest first, up to 12. */
   posts: ProfilePost[];
 };
@@ -40,7 +43,8 @@ export type LookupResult = {
   provider: "apify" | "mock";
 };
 
-export type LookupFailure = "private" | "not_found" | "timeout" | "failed" | "rate_limited" | "unavailable";
+/** "incomplete": the lookup worked but left out something the score needs (see completeness.ts). */
+export type LookupFailure = "private" | "not_found" | "timeout" | "failed" | "rate_limited" | "unavailable" | "incomplete";
 
 export type LookupOutcome =
   | { status: "ok"; result: LookupResult; cached: boolean }

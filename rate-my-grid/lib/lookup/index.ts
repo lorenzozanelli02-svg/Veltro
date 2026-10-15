@@ -2,6 +2,7 @@ import { cache } from "../cache";
 import { lookupMode, RETENTION } from "../config";
 import { checkRateLimit, LOOKUP_LIMITS } from "../ratelimit";
 import { fetchFromApify } from "./apify";
+import { checkCompleteness, listMissing } from "./completeness";
 import { downloadImages } from "./images";
 import { fetchFromMock, mockImage } from "./mock";
 import type { LookupFailure, LookupImage, LookupOutcome, LookupResult, Profile, ProfilePreview, ProviderResult } from "./types";
@@ -12,16 +13,19 @@ import type { LookupFailure, LookupImage, LookupOutcome, LookupResult, Profile, 
  */
 
 const TIMEOUT_MS = () => Number(process.env.LOOKUP_TIMEOUT_MS ?? 60_000);
-const KEY = (username: string) => `lookup:v1:${username}`;
-const IMAGE_KEY = (username: string, i: number) => `lookup:v1:${username}:img:${i}`;
+const KEY = (username: string) => `lookup:v2:${username}`;
+// v2: profiles carry highlights and a nullable bio.
+const IMAGE_KEY = (username: string, i: number) => `lookup:v2:${username}:img:${i}`;
 
 type CachedLookup =
   | { status: "ok"; profile: Profile; fetchedAt: string; provider: LookupResult["provider"]; imageCount: number }
   | { status: "private" | "not_found"; fetchedAt: string };
 
-export function lookupMessage(status: LookupFailure, username: string) {
+export function lookupMessage(status: LookupFailure, username: string, missing: string[] = []) {
   const at = `@${username}`;
   switch (status) {
+    case "incomplete":
+      return `We couldn't get everything we need from ${at}${missing.length ? ` (${listMissing(missing)})` : ""}, and we'd rather not guess. Add a few screenshots instead and you'll still get an accurate score.`;
     case "private":
       return `${at} is a private account, so we can't see it from here. No problem: add a few screenshots instead and you'll still get your score.`;
     case "not_found":
@@ -60,7 +64,23 @@ async function fetchImages(profile: Profile, provider: LookupResult["provider"])
   return downloadImages(targets);
 }
 
-export async function lookupProfile(username: string, visitor: string): Promise<LookupOutcome> {
+/**
+ * Looks up a public profile and checks it has everything the score needs. Anything short of that comes
+ * back as a failure with a friendly message, and the visitor is offered screenshot upload instead.
+ */
+export async function lookupProfile(username: string, visitor: string, options: { skipRateLimit?: boolean } = {}): Promise<LookupOutcome> {
+  const outcome = await fetchProfile(username, visitor, options);
+  if (outcome.status !== "ok") return outcome;
+  // Checked on every read, cached or fresh, so changing the requirement applies straight away.
+  const complete = checkCompleteness(outcome.result);
+  if (!complete.ok) {
+    logLookup({ username, cached: outcome.cached, status: "incomplete", missing: complete.missing, postsUsable: complete.postsUsable, postsNeeded: complete.postsNeeded, costUsd: 0 });
+    return { status: "incomplete", message: lookupMessage("incomplete", username, complete.missing) };
+  }
+  return outcome;
+}
+
+async function fetchProfile(username: string, visitor: string, { skipRateLimit = false }: { skipRateLimit?: boolean }): Promise<LookupOutcome> {
   const mode = lookupMode();
   const fail = (status: LookupFailure): LookupOutcome => ({ status, message: lookupMessage(status, username) });
   if (mode === "off") return fail("unavailable");
@@ -76,7 +96,7 @@ export async function lookupProfile(username: string, visitor: string): Promise<
     return fail("unavailable");
   }
 
-  const limit = await checkRateLimit(visitor, LOOKUP_LIMITS);
+  const limit = skipRateLimit ? ({ ok: true } as const) : await checkRateLimit(visitor, LOOKUP_LIMITS);
   if (!limit.ok) {
     logLookup({ username, cached: false, status: "rate_limited", scope: limit.scope, costUsd: 0 });
     return fail("rate_limited");
@@ -117,7 +137,7 @@ export function toPreview(result: LookupResult): ProfilePreview {
   return {
     username: profile.username,
     fullName: profile.fullName,
-    bio: profile.bio,
+    bio: profile.bio ?? "",
     avatar: avatar ? `data:${avatar.mediaType};base64,${avatar.data}` : null,
     followers: profile.followers,
     following: profile.following,

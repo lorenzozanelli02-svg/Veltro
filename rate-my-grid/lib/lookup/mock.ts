@@ -4,7 +4,8 @@ import type { Profile, ProfilePost, ProviderResult } from "./types";
 /**
  * Stand-in for Apify while building. Any username "exists" and gets a believable coaching account.
  * A few usernames trigger each failure so the fallback to screenshots can be tested:
- *   private.account, no.such.account, slow.account, broken.account
+ *   private.account, no.such.account, slow.account, broken.account, and incomplete.account (comes
+ *   back without follower counts and with too few posts, to test the data check)
  */
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -44,6 +45,7 @@ export function mockProfile(username: string, now = new Date()): Profile {
     category: "Personal trainer",
     isVerified: false,
     isBusiness: true,
+    highlights: 4,
     posts: offsets.map((days, i) => ({
       id: `mock-post-${i + 1}`,
       type: TYPES[i],
@@ -79,5 +81,9 @@ export async function fetchFromMock(username: string, timeoutMs: number): Promis
   if (username === "private.account") return { status: "private", detail: "mock private", costUsd: 0.001 };
   if (username === "no.such.account") return { status: "not_found", detail: "mock not found", costUsd: 0.001 };
   if (username === "broken.account") return { status: "failed", detail: "mock failure", costUsd: null };
+  if (username === "incomplete.account") {
+    const thin = mockProfile(username);
+    return { status: "ok", profile: { ...thin, followers: null, following: null, posts: thin.posts.slice(0, 5) }, costUsd: 0.004 };
+  }
   return { status: "ok", profile: mockProfile(username), costUsd: 0.003, costDetail: { provider: "mock" } };
 }

@@ -60,8 +60,9 @@ export async function POST(request: Request) {
   if (typeof handle === "string") {
     const parsed = parseInstagramHandle(handle);
     if (!parsed.ok) return error(400, "invalid", parsed.message);
+    // The lookup also checks the data is complete (bio, counts, 9 recent posts with pictures and dates).
     const lookup = await lookupProfile(parsed.username, visitor);
-    // Any lookup problem sends the browser to screenshot upload instead.
+    // Any lookup problem, including incomplete data, sends the browser to screenshot upload instead.
     if (lookup.status !== "ok") return error(422, lookup.status, lookup.message, { fallback: "screenshots" });
     const { profile } = lookup.result;
     const metrics = profileMetrics(profile);

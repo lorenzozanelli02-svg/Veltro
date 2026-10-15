@@ -48,7 +48,11 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
 }
 
 export async function drawShareCard(
-  data: Pick<Report, "score" | "verdict" | "categories"> & { goalLabel: string; siteName: string },
+  data: Pick<Report, "score" | "verdict"> & {
+    categories: Record<keyof Report["categories"], { score: number; max: number }>;
+    goalLabel: string;
+    siteName: string;
+  },
 ): Promise<Blob> {
   const display = cssFont("--font-barlow", "Arial Narrow, sans-serif");
   const sans = cssFont("--font-inter", "system-ui, sans-serif");
@@ -161,13 +165,17 @@ export async function drawShareCard(
   const colWidth = (W - 180) / CATEGORIES.length;
   CATEGORIES.forEach(({ key, label }, i) => {
     const x = 90 + colWidth * (i + 0.5);
-    const score = data.categories[key].score;
-    ctx.fillStyle = BAND[scoreBand(score)];
+    const { score, max } = data.categories[key];
+    ctx.fillStyle = BAND[scoreBand(score, max)];
     ctx.font = `800 76px ${display}`;
     ctx.fillText(String(score), x, top + 110);
+    // "/20" under the number, small, so a 14 doesn't read as 14 out of 100.
+    ctx.fillStyle = COLORS.muted;
+    ctx.font = `600 26px ${sans}`;
+    ctx.fillText(`/${max}`, x, top + 140);
     ctx.fillStyle = COLORS.muted;
     ctx.font = `500 23px ${sans}`;
-    ctx.fillText(SHORT_LABELS[key] ?? label, x, top + 152);
+    ctx.fillText(SHORT_LABELS[key] ?? label, x, top + 178);
   });
 
   // Site name, small.

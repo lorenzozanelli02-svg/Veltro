@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { buildAnalysisContent, profileText, SYSTEM_PROMPT } from "@/lib/analysis-prompt";
+import { buildAnalysisContent, checksForAi, profileData, profileText, SYSTEM_PROMPT } from "@/lib/analysis-prompt";
 import { parseInstagramHandle } from "@/lib/instagram-handle";
 import { lookupProfile } from "@/lib/lookup";
 import { classifyApifyItems, fetchFromApify, mapApifyItem } from "@/lib/lookup/apify";
@@ -56,6 +56,29 @@ describe("profileMetrics", () => {
     expect(m.formats).toEqual({ Reel: 4, Video: 0, Carousel: 3, Image: 5 });
     const best = Object.entries(m.engagementByFormat).sort((a, b) => b[1] - a[1])[0][0];
     expect(best).toBe("Carousel");
+    // 6 posts in the last 30 days.
+    expect(m.postsPerWeek).toBe(1.4);
+    // Posts 21 and 9 days ago: the longest gap.
+    expect(m.longestGapDays).toBe(12);
+    expect(m.formatShare).toEqual({ reels: 33, carousels: 25, images: 42 });
+    expect(m.captionsWithCta).toBe(0);
+    expect(m.benchmark).toMatchObject({ range: "1,000 to 10,000 followers", position: "above" });
+  });
+
+  it("doesn't undercount frequent posters when every fetched post is recent", () => {
+    const profile = mockProfile("x", now);
+    // 12 posts, one a day.
+    profile.posts = profile.posts.map((p, i) => ({ ...p, postedAt: new Date(now.getTime() - (i + 1) * 86_400_000).toISOString() }));
+    expect(profileMetrics(profile, now).postsPerWeek).toBe(7);
+  });
+
+  it("counts captions that ask people to do something", () => {
+    const profile = mockProfile("x", now);
+    profile.posts[0] = { ...profile.posts[0], caption: "Book your free call, link in bio 👆" };
+    profile.posts[1] = { ...profile.posts[1], caption: "Comment PLAN and I'll send it over" };
+    const m = profileMetrics(profile, now);
+    expect(m.captionsWithCta).toBe(2);
+    expect(m.ctaPosts.map((c) => c.post)).toEqual([1, 2]);
   });
 
   it("copes with hidden likes and no followers", () => {
@@ -222,12 +245,22 @@ describe("analysis prompt", () => {
     };
   };
 
-  it("gives the AI the real numbers, already worked out", async () => {
-    const text = profileText(await lookup(), now);
-    expect(text).toContain("Followers: 3,912");
-    expect(text).toContain("Engagement per post: 4.7");
-    expect(text).toContain("Posts in the last 30 days: 6; days since the last post: 2");
+  it("gives the AI the real numbers, already worked out, each with an id", async () => {
+    const result = await lookup();
+    const text = profileText(result, profileData(result, now));
+    expect(text).toContain("- followers: Followers: 3,912");
+    expect(text).toContain("- engagement_rate: Engagement rate: 4.7");
+    expect(text).toContain("- posts_per_week: Posts per week: 1.4");
+    expect(text).toContain("- longest_gap: Longest gap between posts: 12 days");
     expect(text).toContain("Post 1 · Reel");
+  });
+
+  it("asks the AI only for the checks the numbers can't settle", () => {
+    const fromLookup = checksForAi("clients", "profile");
+    expect(fromLookup).not.toContain("consistency_frequency");
+    expect(fromLookup).toContain("bio_who");
+    expect(fromLookup).toContain("fit_clients_proof");
+    expect(checksForAi("clients", "screenshots")).toContain("consistency_frequency");
   });
 
   it("labels every image and fences the account's own text off as data", async () => {

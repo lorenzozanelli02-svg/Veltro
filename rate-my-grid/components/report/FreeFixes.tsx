@@ -1,4 +1,5 @@
 import type { Report } from "@/lib/report";
+import { EvidenceList } from "./EvidenceList";
 
 export function FreeFixes({ fixes }: { fixes: Report["freeFixes"] }) {
   return (
@@ -17,6 +18,7 @@ export function FreeFixes({ fixes }: { fixes: Report["freeFixes"] }) {
               <dd className="mt-1 text-ink">{fix.fix}</dd>
             </div>
           </dl>
+          <EvidenceList evidence={fix.evidence} className="mt-4 border-t border-line pt-4" />
         </li>
       ))}
     </ol>

@@ -57,7 +57,8 @@ export function mapApifyItem(item: Json): Profile {
   return {
     username: str(item.username).toLowerCase(),
     fullName: str(item.fullName),
-    bio: str(item.biography),
+    // Kept as null when the field is missing, so the data check can tell "no bio" from "not returned".
+    bio: typeof item.biography === "string" ? item.biography : null,
     avatarUrl: str(pick(item, "profilePicUrlHD", "profilePicUrl")) || null,
     externalUrl: str(item.externalUrl) || str(links[0]?.url) || null,
     followers: num(item.followersCount),
@@ -66,6 +67,7 @@ export function mapApifyItem(item: Json): Profile {
     category: str(pick(item, "businessCategoryName", "categoryName")) || null,
     isVerified: Boolean(item.verified),
     isBusiness: Boolean(item.isBusinessAccount),
+    highlights: num(item.highlightReelCount),
     posts,
   };
 }

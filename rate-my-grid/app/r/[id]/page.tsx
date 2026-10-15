@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { FreeFixes } from "@/components/report/FreeFixes";
 import { FullReportView } from "@/components/report/FullReportView";
 import { LockedReport } from "@/components/report/LockedReport";
+import { NumbersPanel } from "@/components/report/NumbersPanel";
 import { SaveLink } from "@/components/report/SaveLink";
 import { ShareButton } from "@/components/report/ShareButton";
 import { CategoryBars } from "@/components/score/CategoryBars";
@@ -106,11 +107,30 @@ export default async function ReportPage({
               <h2 id="cat-title" className="mt-3 font-display text-4xl leading-[0.95] font-extrabold uppercase sm:text-5xl">
                 Where you <span className="text-ig">lose points</span>
               </h2>
+              <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-muted">
+                Each part is out of 20, scored against the same fixed checks for every account. Here&rsquo;s what earned and lost
+                points, and what it&rsquo;s based on.
+              </p>
               <div className="mt-6 rounded-2xl border border-line bg-surface/80 p-5 sm:p-6">
-                <CategoryBars categories={report.categories} notes />
+                <CategoryBars categories={report.categories} detail />
               </div>
             </section>
           </div>
+
+          {report.facts.length > 0 && (
+            <section aria-labelledby="numbers-title" className="mt-16 lg:mt-24">
+              <Eyebrow>Your numbers</Eyebrow>
+              <h2 id="numbers-title" className="mt-3 font-display text-4xl leading-[0.95] font-extrabold uppercase sm:text-5xl">
+                The <span className="text-ig">facts</span>
+              </h2>
+              <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-muted">
+                Worked out from your last {report.source?.kind === "profile" ? report.source.postsAnalysed : ""} posts, not estimated.
+              </p>
+              <div className="mt-6">
+                <NumbersPanel facts={report.facts} benchmark={report.benchmark} />
+              </div>
+            </section>
+          )}
 
           <section aria-labelledby="fix-title" className="mt-16 lg:mt-24">
             <Eyebrow>Free fixes</Eyebrow>

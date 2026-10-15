@@ -2,7 +2,7 @@
  * Which services are live. Without keys the app runs on mocks so the whole flow works locally.
  * Mocks are never used in production unless DEMO_MODE=true, so a missing key can't make the report free.
  */
-function demoAllowed() {
+export function demoAllowed() {
   return process.env.NODE_ENV !== "production" || process.env.DEMO_MODE === "true";
 }
 
@@ -47,3 +47,28 @@ export const RETENTION = {
   // Private or missing accounts, so retyping the same name doesn't trigger another paid lookup.
   failedLookupSeconds: 60 * 60 * 6,
 };
+
+/** The Claude model that scores accounts. */
+export function analysisModel() {
+  return process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
+}
+
+/**
+ * How hard the model thinks. Fixed (not left to the model's default) so every account gets the same
+ * depth of review. "high" suits judgement-heavy work; "medium" is cheaper.
+ */
+export function analysisEffort(): "low" | "medium" | "high" | "xhigh" | "max" {
+  const effort = process.env.ANALYSIS_EFFORT;
+  return effort === "low" || effort === "medium" || effort === "xhigh" || effort === "max" ? effort : "high";
+}
+
+// Only these models accept a temperature setting. Newer ones (Claude Opus 4.7 onwards, including the
+// default Claude Opus 5.5) reject it with an error, so it's sent only when one of these is configured.
+const SAMPLING_MODELS = ["claude-opus-4-6", "claude-sonnet-4-6", "claude-opus-4-5", "claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4-1"];
+
+/** A low temperature for steadier scores, on models that allow it; nothing otherwise. */
+export function analysisSampling(model: string): { temperature?: number } {
+  if (!SAMPLING_MODELS.some((m) => model.startsWith(m))) return {};
+  const temperature = Number(process.env.ANALYSIS_TEMPERATURE ?? 0);
+  return { temperature: Number.isFinite(temperature) ? Math.min(Math.max(temperature, 0), 1) : 0 };
+}

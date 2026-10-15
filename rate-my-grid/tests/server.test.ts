@@ -70,3 +70,24 @@ describe("checkRateLimit", () => {
     expect(await checkRateLimit("c", ANALYSIS_LIMITS, count)).toMatchObject({ ok: false, scope: "global" });
   });
 });
+
+describe("admin test page access", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("needs the exact token when ADMIN_TOKEN is set", async () => {
+    vi.stubEnv("ADMIN_TOKEN", "correct-horse-battery-staple");
+    const { adminAuthorised } = await import("@/lib/admin");
+    expect(adminAuthorised("correct-horse-battery-staple")).toBe(true);
+    expect(adminAuthorised("wrong")).toBe(false);
+    expect(adminAuthorised(null)).toBe(false);
+  });
+
+  it("is closed on the live site when no token is set", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("ADMIN_TOKEN", "");
+    vi.stubEnv("DEMO_MODE", "");
+    const { adminAuthorised, adminEnabled } = await import("@/lib/admin");
+    expect(adminEnabled()).toBe(false);
+    expect(adminAuthorised("anything")).toBe(false);
+  });
+});

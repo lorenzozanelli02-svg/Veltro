@@ -28,7 +28,7 @@ describe("report schema", () => {
     expect(ReportSchema.safeParse(report).success).toBe(false);
   });
 
-  it("rejects a plan that doesn't cover days 1 to 30 in order", () => {
+  it("rejects a plan whose days aren't in order from day 1", () => {
     const report = mockReport("clients", answers);
     report.full.plan.days[3].day = 9;
     expect(ReportSchema.safeParse(report).success).toBe(false);

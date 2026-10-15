@@ -2,6 +2,7 @@ import { Ban, Check, ChevronDown, Plus } from "lucide-react";
 import type { FullReport } from "@/lib/report";
 import { Eyebrow } from "../Eyebrow";
 import { CopyButton } from "./CopyButton";
+import { EvidenceList } from "./EvidenceList";
 
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -46,7 +47,7 @@ export function FullReportView({ full }: { full: FullReport }) {
     <div className="space-y-20">
       <Section id="kss" eyebrow="Your breakdown" title={<>Keep. Stop. <span className="text-ig">Start.</span></>}>
         <div className="grid gap-4 lg:grid-cols-3">
-          {KSS.map(({ key, label, icon: Icon, tone, ring }) => (
+          {KSS.filter(({ key }) => full[key].length > 0).map(({ key, label, icon: Icon, tone, ring }) => (
             <div key={key} className={`rounded-2xl border bg-surface/80 p-5 sm:p-6 ${ring}`}>
               <p className={`flex items-center gap-2 font-display text-2xl font-extrabold uppercase ${tone}`}>
                 <Icon aria-hidden="true" className="size-5" strokeWidth={2.6} />
@@ -57,6 +58,7 @@ export function FullReportView({ full }: { full: FullReport }) {
                   <li key={item.point}>
                     <p className="font-semibold leading-snug">{item.point}</p>
                     <p className="mt-1 text-[15px] leading-relaxed text-muted">{item.why}</p>
+                    <EvidenceList evidence={item.evidence} className="mt-1.5" />
                   </li>
                 ))}
               </ul>

@@ -2,22 +2,21 @@ import type { Report } from "./report";
 
 /**
  * The made-up result shown on the landing page so people see what they'll get. It's for an invented
- * account (no real person's handle or photo) and is kept consistent with how real reports are scored:
- * the overall score leans on call to action and fit with goal, as the analysis prompt asks.
+ * account (no real person's handle or photo) and is scored the way real reports are: five categories
+ * out of 20 from the rubric's checks (lib/rubric.ts), added up to a total out of 100.
  */
 export const EXAMPLE = {
   account: { description: "Online fitness coach", followers: 2431, postsLast30Days: 6 },
   goalLabel: "Get clients",
-  // Bio, content and consistency count once; call to action and fit with goal count twice:
-  // (48 + 81 + 57 + 2 × 29 + 2 × 55) / 7 = 50.6, so 51.
-  score: 51,
+  // 7 + 17 + 11 + 4 + 9 = 48
+  score: 48,
   verdict: "Great content. Nobody knows how to hire you.",
   categories: {
-    bio: { score: 48, note: "" },
-    content: { score: 81, note: "" },
-    consistency: { score: 57, note: "" },
-    callToAction: { score: 29, note: "" },
-    goalFit: { score: 55, note: "" },
+    bio: { score: 7, max: 20 },
+    content: { score: 17, max: 20 },
+    consistency: { score: 11, max: 20 },
+    callToAction: { score: 4, max: 20 },
+    goalFit: { score: 9, max: 20 },
   },
   fix: {
     title: "Point your link at your booking page",
@@ -29,4 +28,4 @@ export const EXAMPLE = {
     before: "Coach 💪 | Mum of 2 | 🏋️‍♀️\nLiving my best life ✨",
     after: "Helping busy mums get fit in 20 minutes a day\n✅ 200+ women coached online\nBook a free call 👇",
   },
-} satisfies Pick<Report, "score" | "verdict" | "categories"> & Record<string, unknown>;
+} satisfies Pick<Report, "score" | "verdict"> & Record<string, unknown>;
