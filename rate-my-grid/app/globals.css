@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/*
+  Colour tokens. Layout and type follow the Get Seen Get Signed site; the colours are
+  Instagram's: a near-black background, the orange → pink → purple gradient for
+  headline accents, buttons and score rings, and its pink as the solid accent for
+  small text and icons. `warn` and `bad` mark middling and weak scores.
+*/
+@theme {
+  --color-bg: #08070a;
+  --color-surface: #110f14;
+  --color-raised: #19161d;
+  --color-line: #29242f;
+  --color-ink: #f6f3f7;
+  --color-muted: #a9a2b1;
+  --color-accent: #f0418c;
+  --color-accent-hover: #ff6aa6;
+  --color-on-accent: #ffffff;
+  --color-warn: #fcaf45;
+  --color-bad: #ff5a4f;
+  --color-ig-yellow: #feda77;
+  --color-ig-orange: #f58529;
+  --color-ig-pink: #dd2a7b;
+  --color-ig-purple: #8134af;
+  --color-ig-blue: #515bd4;
+}
+
+/* Instagram gradient as a fill (buttons, bars) and as text (headline accents). */
+@utility bg-ig {
+  background-image: linear-gradient(100deg, var(--color-ig-orange) 0%, var(--color-ig-pink) 45%, var(--color-ig-purple) 80%, var(--color-ig-blue) 100%);
+}
+
+@utility text-ig {
+  background-image: linear-gradient(95deg, var(--color-ig-yellow) 0%, var(--color-ig-orange) 22%, var(--color-ig-pink) 55%, #a85be0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  background: var(--color-bg);
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+button,
+a,
+input,
+label {
+  touch-action: manipulation;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: rise 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* The flow replaces the landing page while it's open (see components/flow/ScoreFlow.tsx). */
+@custom-variant flow-open (html[data-flow] &);
+
+/* Score rings fill up from zero to their stroke-dasharray; --c (the circumference) is set inline. */
+@keyframes ring-fill {
+  from {
+    stroke-dasharray: 0 var(--c);
+  }
+}
+
+.ring-fill {
+  animation: ring-fill 1100ms cubic-bezier(0.2, 0.8, 0.2, 1) 150ms both;
+}
+
+@keyframes bar-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.bar-fill {
+  transform-origin: left;
+  animation: bar-fill 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 250ms both;
+}
+
+/* Waiting to scroll into view (see components/score/PlayWhenVisible.tsx); removing the attribute replays them. */
+[data-anim="wait"] :is(.ring-fill, .bar-fill, .animate-rise) {
+  animation: none;
+}
